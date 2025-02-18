@@ -16,9 +16,9 @@ import {
 } from './ReportarProblema.styles';
 
 interface ReportarProblemaProps {
-  variant?: 'alumno' | 'docente' | 'coordinador'; // Personalización según el rol
-  onSubmit: (data: { dni: string; email: string; description: string }) => void;
+  onSubmit?: (data: { dni: string; email: string; description: string }) => void;
 }
+
 
 // ✅ Definir validaciones con Zod
 const reportSchema = z.object({
@@ -29,7 +29,7 @@ const reportSchema = z.object({
 
 type ReportFormData = z.infer<typeof reportSchema>;
 
-const ReportarProblema: React.FC<ReportarProblemaProps> = ({ variant = 'alumno', onSubmit }) => {
+const ReportarProblema: React.FC<ReportarProblemaProps> = ({ onSubmit }) => {
   const {
     register,
     handleSubmit,
@@ -40,7 +40,7 @@ const ReportarProblema: React.FC<ReportarProblemaProps> = ({ variant = 'alumno',
 
   const handleFormSubmit: SubmitHandler<ReportFormData> = (data) => {
     toast.success('Reporte enviado correctamente 🎉');
-    onSubmit(data);
+    onSubmit?.(data);
   };
 
   return (

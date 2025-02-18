@@ -51,7 +51,7 @@ const DashboardAlumno = () => {
       case 'MateriasHorarios': return <MateriasHorarios />;
       case 'MateriasCalificaciones': return <MateriasCalificaciones />;
       case 'AsistenciasVer': return <AsistenciasVer />;
-      case 'ReportarProblema': return <ReportarProblema onSubmit={(data) => console.log(data)} />;
+      case 'ReportarProblema': return <ReportarProblema />;
       default: return (
         <>
           <h1>Bienvenido USER</h1>
