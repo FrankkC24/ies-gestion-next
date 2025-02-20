@@ -18,6 +18,7 @@ const GlobalStyles = createGlobalStyle`
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
   }
 
   #__next {
@@ -25,6 +26,7 @@ const GlobalStyles = createGlobalStyle`
     flex-direction: column;
     min-height: 100vh;
     padding-bottom: 100px;
+    overflow: hidden;
   }
 
   a {

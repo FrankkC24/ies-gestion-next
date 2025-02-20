@@ -25,7 +25,7 @@ import CargarNotas from '@/components/DashboardViews/Docente/CargarNotas/CargarN
 import CargarFinales from '@/components/DashboardViews/Docente/CargarFinales/CargarFinales';
 import DocentesHorarios from '@/components/DashboardViews/Docente/DocentesHorarios/DocentesHorarios';
 import ReportarProblema from '@/components/ReportarProblema/ReportarProblema';
-import CargarAsistencias from '@/components/DashboardViews/Docente/CargarAsistencias/CargarAsistencias';
+import CargarAsistencias from '@/components/DashboardViews/Docente/CargaAsistencias/CargaAsistencias';
 import VerAsistencias from '@/components/DashboardViews/Docente/VerAsistencias/VerAsistencias';
 
 import AppLayout from '@/components/Layout/AppLayout';

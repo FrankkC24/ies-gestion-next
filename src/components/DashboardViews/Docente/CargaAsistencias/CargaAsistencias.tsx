@@ -13,7 +13,7 @@ import {
   SlideNotification,
   CloseButton,
   ProgressBar,
-} from '@/components/DashboardViews/Docente/CargaAsistencias/CargaAsistencias';
+} from '@/components/DashboardViews/Docente/CargaAsistencias/CargaAsistencias.styles';
 
 interface Alumno {
   dni: string;

@@ -8,14 +8,14 @@ import Footer from '@/components/Footer/Footer';
 const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
+  min-height: 100vh; /* Ocupa toda la pantalla */
 `;
 
 const ContentWrapper = styled.main`
-  flex: 1; /* Permite que el contenido crezca y empuje el footer hacia abajo */
+  flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: auto; /* Permite desplazamiento para contenido largo */
+  overflow-y: visible; /* Elimina el scroll interno que afectaba el footer */
 `;
 
 interface AppLayoutProps {

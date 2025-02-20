@@ -1,13 +1,11 @@
 import styled, { keyframes } from 'styled-components';
 
-export const CargarAsistenciasContainer = styled.div`
-  padding: 1rem 1.5rem;
+export const NotificarContainer = styled.div`
+  padding: 0.8rem;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow-y: auto; /* Scroll vertical para el contenedor */
-  max-height: calc(90vh - 150px); /* Limita la altura del contenedor */
-  scroll-behavior: smooth;
+  overflow-y: auto;
 
   h2 {
     font-size: 2.5rem;
@@ -20,13 +18,13 @@ export const FilterContainer = styled.div`
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: 0.5rem;
 
   label {
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: #860000;
-    margin-right: 0.5rem;
+    margin-right: 0.1rem;
   }
 
   div {
@@ -36,11 +34,12 @@ export const FilterContainer = styled.div`
   }
 `;
 
-export const Select = styled.select`
-  padding: 0.5rem;
+export const StyledSelect = styled.select`
+  padding: 0.5rem; /* Aumenta el padding */
   border: 2px solid #d32f2f;
   border-radius: 5px;
   font-size: 1rem;
+  width: 100%; /* Para que ocupe el espacio disponible */
 
   &:focus {
     outline: none;
@@ -54,7 +53,76 @@ export const Select = styled.select`
   }
 `;
 
-export const SearchButton = styled.button`
+
+export const StyledInput = styled.input`
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #d32f2f;
+  border-radius: 5px;
+
+  &:focus {
+    outline: none;
+    border-color: #860000;
+    box-shadow: 0 0 3px rgba(134, 0, 0, 0.8);
+  }
+
+  &:disabled {
+    background-color: #f5f5f5;
+    color: #aaa;
+  }
+`;
+
+export const StyledTextarea = styled.textarea`
+  width: 100%;
+  height: 150px;
+  padding: 0.5rem;
+  border: 1px solid #d32f2f;
+  border-radius: 5px;
+  resize: none;
+  margin-bottom: 1.5rem;
+
+  &:focus {
+    outline: none;
+    border-color: #860000;
+    box-shadow: 0 0 3px rgba(134, 0, 0, 0.8);
+  }
+
+  &:disabled {
+    background-color: #f5f5f5;
+    color: #aaa;
+  }
+`;
+
+export const DocentesList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.5rem;
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+`;
+
+export const DocenteItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  span {
+    font-size: 1rem;
+    color: #333;
+  }
+`;
+
+export const StyledCheckbox = styled.input.attrs({ type: 'checkbox' })`
+  margin: 0;
+  accent-color: #860000; /* Personaliza el color del checkbox */
+`;
+
+export const SendButton = styled.button`
   padding: 0.6rem 1.5rem;
   font-size: 1rem;
   font-weight: bold;
@@ -80,79 +148,6 @@ export const SearchButton = styled.button`
   }
 `;
 
-export const AsistenciasTableWrapper = styled.div`
-  max-height: 60vh; /* Altura máxima de la tabla */
-  scroll-behavior: smooth;
-`;
-
-export const AsistenciasTable = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-
-  th,
-  td {
-    border: 1px solid #ddd;
-    padding: 0.8rem;
-    text-align: left;
-  }
-
-  th {
-    background-color: #860000;
-    color: white;
-    position: sticky;
-    top: 0; /* Mantiene los encabezados fijos */
-    z-index: 1;
-  }
-
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-
-  tr:hover {
-    background-color: #f1f1f1;
-  }
-
-  td {
-    font-size: 0.95rem;
-  }
-`;
-
-export const StyledInput = styled.input`
-  padding: 0.3rem;
-  border: 1px solid #d32f2f;
-  border-radius: 4px;
-  font-size: 0.9rem;
-
-  &:focus {
-    outline: none;
-    border-color: #860000;
-    box-shadow: 0 0 3px rgba(134, 0, 0, 0.8);
-  }
-
-  &:disabled {
-    background-color: #f5f5f5;
-    color: #aaa;
-  }
-`;
-
-export const StyledSelect = styled.select`
-  padding: 0.3rem;
-  border: 1px solid #d32f2f;
-  border-radius: 4px;
-  font-size: 0.9rem;
-
-  &:focus {
-    outline: none;
-    border-color: #860000;
-    box-shadow: 0 0 3px rgba(134, 0, 0, 0.8);
-  }
-
-  &:disabled {
-    background-color: #f5f5f5;
-    color: #aaa;
-  }
-`;
-
 const slideIn = keyframes`
   0% {
     transform: translateX(100%);
@@ -166,15 +161,16 @@ const slideIn = keyframes`
 
 const fadeOut = keyframes`
   0% {
+    transform: translateX(0);
     opacity: 1;
   }
   100% {
-    opacity: 0;
     transform: translateX(100%);
+    opacity: 0;
   }
 `;
 
-export const SlideNotification = styled.div<{ $isFading: boolean }>`
+export const SlideNotification = styled.div`
   position: fixed;
   top: 20%;
   right: 5%;
@@ -190,20 +186,14 @@ export const SlideNotification = styled.div<{ $isFading: boolean }>`
   flex-direction: column;
   align-items: flex-start;
   gap: 0.5rem;
-  animation: ${({ $isFading }) => ($isFading ? fadeOut : slideIn)} 0.5s ease;
 
-  ${({ $isFading }) =>
-    $isFading &&
-    `
-    animation-delay: 3.5s;
-    animation-fill-mode: forwards;
-  `}
+  animation: ${slideIn} 0.5s ease-out, ${fadeOut} 3s ease-out 3s forwards;
 `;
 
 export const ProgressBar = styled.div`
   width: 100%;
   height: 5px;
-  background-color: #fff;
+  background-color: #ddd;
   border-radius: 2px;
   overflow: hidden;
   position: relative;
@@ -217,14 +207,14 @@ export const ProgressBar = styled.div`
     height: 100%;
     width: 100%;
     background-color: #d32f2f;
-    animation: progressBar 3.5s linear;
+    animation: progressBar 3s linear forwards;
   }
 
   @keyframes progressBar {
-    0% {
+    from {
       width: 100%;
     }
-    100% {
+    to {
       width: 0%;
     }
   }
