@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CargarAsistenciasContainer,
   FilterContainer,
@@ -30,6 +30,11 @@ const CargarAsistencias: React.FC = () => {
   const [notification, setNotification] = useState<string | null>(null);
   const [isFading, setIsFading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
+  const [today, setToday] = useState<string | null>(null);
+
+  useEffect(() => {
+    setToday(new Date().toISOString().split('T')[0]);
+  }, []);
 
   const handleSearch = () => {
     if (!selectedCarrera || !selectedMateria || !selectedDivision) {
@@ -37,50 +42,12 @@ const CargarAsistencias: React.FC = () => {
       return;
     }
 
-    const today = new Date().toISOString().split('T')[0]; // Fecha del día actual
+    if (!today) return;
 
     setAlumnos([
       { dni: '40118443', alumno: 'ACEVEDO JESÚS GABRIEL', fecha: today, asistio: 'Seleccionar' },
       { dni: '46374567', alumno: 'LOPEZ MARIA', fecha: today, asistio: 'Seleccionar' },
     ]);
-  };
-
-  const handleCellEdit = (index: number, field: keyof Alumno, value: string) => {
-    setAlumnos((prevAlumnos) => {
-      const updatedAlumnos = [...prevAlumnos];
-      updatedAlumnos[index] = { ...updatedAlumnos[index], [field]: value };
-      return updatedAlumnos;
-    });
-
-    const alumno = alumnos[index].alumno;
-    const message =
-      field === 'asistio'
-        ? `Se registró que ${alumno} ${value === 'Si' ? 'asistió' : 'no asistió'} a clases.`
-        : `El campo ${field} fue actualizado.`;
-
-    showNotification(message);
-  };
-
-  const showNotification = (message: string) => {
-    setNotification(message);
-    setIsDisabled(true);
-    setIsFading(false);
-
-    setTimeout(() => {
-      setIsFading(true);
-      setTimeout(() => {
-        setNotification(null);
-        setIsDisabled(false);
-      }, 0);
-    }, 3500);
-  };
-
-  const handleCloseNotification = () => {
-    setIsFading(true);
-    setTimeout(() => {
-      setNotification(null);
-      setIsDisabled(false);
-    }, 50);
   };
 
   return (
@@ -118,7 +85,7 @@ const CargarAsistencias: React.FC = () => {
       {notification && (
         <SlideNotification $isFading={isFading}>
           <span>{notification}</span>
-          <CloseButton onClick={handleCloseNotification}>&times;</CloseButton>
+          <CloseButton>&times;</CloseButton>
           <ProgressBar />
         </SlideNotification>
       )}
@@ -144,14 +111,17 @@ const CargarAsistencias: React.FC = () => {
                       disabled={isDisabled}
                       type="date"
                       value={alumno.fecha}
-                      onChange={(e) => handleCellEdit(index, 'fecha', e.target.value)}
                     />
                   </td>
                   <td>
                     <StyledSelect
                       disabled={isDisabled}
                       value={alumno.asistio}
-                      onChange={(e) => handleCellEdit(index, 'asistio', e.target.value)}
+                      onChange={(e) => setAlumnos((prev) => {
+                        const updated = [...prev];
+                        updated[index].asistio = e.target.value;
+                        return updated;
+                      })}
                     >
                       <option value="Seleccionar">Seleccionar</option>
                       <option value="Si">Si</option>

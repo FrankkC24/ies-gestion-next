@@ -26,16 +26,32 @@ import NotificarDocentes from '@/components/DashboardViews/Coordinador/Notificar
 import BuscarAlumnos from '@/components/DashboardViews/Coordinador/BuscarAlumnos/BuscarAlumnos';
 import NotificarAlumnos from '@/components/DashboardViews/Coordinador/NotificarAlumnos/NotificarAlumnos';
 import BuscarMaterias from '@/components/DashboardViews/Coordinador/BuscarMaterias/BuscarMaterias';
+import EditarHorarios from '@/components/DashboardViews/Coordinador/EditarHorarios/EditarHorarios';
+import NuevoHorario from '@/components/DashboardViews/Coordinador/NuevoHorario/NuevoHorario';
 
 const DashboardCoordinador: React.FC = () => {
   const [visibleSubMenu, setVisibleSubMenu] = useState<string | null>(null);
+  const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<string>('Bienvenido');
 
-  const handleMouseEnter = (menu: string) => setVisibleSubMenu(menu);
-  const handleMouseLeave = () => setVisibleSubMenu(null);
+  const handleMouseEnter = (menu: string) => {
+    setVisibleSubMenu(menu);
+    setActiveSubMenu(menu);
+  };
+
+  const handleMouseLeave = (menu: string) => {
+    // Se usa un pequeño delay para evitar el cierre inmediato
+    setTimeout(() => {
+      if (activeSubMenu !== menu) {
+        setVisibleSubMenu(null);
+      }
+    }, 200);
+  };
+
   const handleSubMenuClick = (view: string) => {
     setCurrentView(view);
     setVisibleSubMenu(null);
+    setActiveSubMenu(null);
   };
 
   const renderContent = () => {
@@ -50,6 +66,10 @@ const DashboardCoordinador: React.FC = () => {
         return <NotificarAlumnos />;
       case 'BuscarMaterias':
         return <BuscarMaterias />;
+      case 'EditarHorarios':
+        return <EditarHorarios />;
+      case 'NuevoHorario':
+        return <NuevoHorario />;
       case 'ReportarProblema':
         return <ReportarProblema />;
       default:
@@ -67,7 +87,10 @@ const DashboardCoordinador: React.FC = () => {
       <DashboardContainer>
         <Sidebar>
           {/* Menú DOCENTES */}
-          <MenuItem onMouseEnter={() => handleMouseEnter('docentes')} onMouseLeave={handleMouseLeave}>
+          <MenuItem
+            onMouseEnter={() => handleMouseEnter('docentes')}
+            onMouseLeave={() => handleMouseLeave('docentes')}
+          >
             <span>
               <FaClipboardList style={{ marginRight: '0.2rem' }} />
               DOCENTES <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
@@ -85,7 +108,10 @@ const DashboardCoordinador: React.FC = () => {
           </MenuItem>
 
           {/* Menú ALUMNOS */}
-          <MenuItem onMouseEnter={() => handleMouseEnter('alumnos')} onMouseLeave={handleMouseLeave}>
+          <MenuItem
+            onMouseEnter={() => handleMouseEnter('alumnos')}
+            onMouseLeave={() => handleMouseLeave('alumnos')}
+          >
             <span>
               <FaUsers style={{ marginRight: '0.2rem' }} />
               ALUMNOS <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
@@ -102,8 +128,11 @@ const DashboardCoordinador: React.FC = () => {
             </SubMenu>
           </MenuItem>
 
-          {/* Menú MATERIAS (Nuevo Submenú) */}
-          <MenuItem onMouseEnter={() => handleMouseEnter('materias')} onMouseLeave={handleMouseLeave}>
+          {/* Menú MATERIAS */}
+          <MenuItem
+            onMouseEnter={() => handleMouseEnter('materias')}
+            onMouseLeave={() => handleMouseLeave('materias')}
+          >
             <span>
               <FaBook style={{ marginRight: '0.2rem' }} />
               MATERIAS <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
@@ -112,6 +141,25 @@ const DashboardCoordinador: React.FC = () => {
               <li onClick={() => handleSubMenuClick('BuscarMaterias')}>
                 <FaBook style={{ marginRight: '0.5rem' }} />
                 BUSCAR
+              </li>
+              {/* Submenú HORARIOS */}
+              <li
+                onMouseEnter={() => handleMouseEnter('horarios')}
+                onMouseLeave={() => handleMouseLeave('horarios')}
+              >
+                <span>
+                  HORARIOS <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
+                </span>
+                <SubMenu $isVisible={visibleSubMenu === 'horarios'}>
+                  <li onClick={() => handleSubMenuClick('EditarHorarios')}>
+                    <FaEdit style={{ marginRight: '0.5rem' }} />
+                    EDITAR
+                  </li>
+                  <li onClick={() => handleSubMenuClick('NuevoHorario')}>
+                    <FaBook style={{ marginRight: '0.5rem' }} />
+                    NUEVO
+                  </li>
+                </SubMenu>
               </li>
             </SubMenu>
           </MenuItem>
