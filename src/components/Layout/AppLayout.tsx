@@ -15,7 +15,7 @@ const ContentWrapper = styled.main`
   flex: 1;
   display: flex;
   flex-direction: column;
-  overflow-y: visible; /* Elimina el scroll interno que afectaba el footer */
+  overflow-y: visible; 
 `;
 
 interface AppLayoutProps {
