@@ -28,31 +28,32 @@ import NotificarAlumnos from '@/components/DashboardViews/Coordinador/NotificarA
 import BuscarMaterias from '@/components/DashboardViews/Coordinador/BuscarMaterias/BuscarMaterias';
 import EditarHorarios from '@/components/DashboardViews/Coordinador/EditarHorarios/EditarHorarios';
 import NuevoHorario from '@/components/DashboardViews/Coordinador/NuevoHorario/NuevoHorario';
+import EditarMesas from '@/components/DashboardViews/Coordinador/EditarMesas/EditarMesas';
+import ImprimirMesas from '@/components/DashboardViews/Coordinador/ImprimirMesas/ImprimirMesas';
+import InscriptosMesas from '@/components/DashboardViews/Coordinador/InscriptosMesas/InscriptosMesas';
+import CalificacionesFinales from '@/components/DashboardViews/Coordinador/CalificacionesFinales/CalificacionesFinales';
+
 
 const DashboardCoordinador: React.FC = () => {
-  const [visibleSubMenu, setVisibleSubMenu] = useState<string | null>(null);
-  const [activeSubMenu, setActiveSubMenu] = useState<string | null>(null);
+  const [visibleMenus, setVisibleMenus] = useState<string[]>([]);
   const [currentView, setCurrentView] = useState<string>('Bienvenido');
 
   const handleMouseEnter = (menu: string) => {
-    setVisibleSubMenu(menu);
-    setActiveSubMenu(menu);
+    setVisibleMenus((prev) => [...prev.filter((m) => m !== menu), menu]);
   };
 
   const handleMouseLeave = (menu: string) => {
-    // Se usa un pequeño delay para evitar el cierre inmediato
     setTimeout(() => {
-      if (activeSubMenu !== menu) {
-        setVisibleSubMenu(null);
-      }
-    }, 200);
+      setVisibleMenus((prev) => prev.filter((m) => m !== menu));
+    }, 50);
   };
 
   const handleSubMenuClick = (view: string) => {
     setCurrentView(view);
-    setVisibleSubMenu(null);
-    setActiveSubMenu(null);
+    setVisibleMenus([]);
   };
+
+  const isVisible = (menu: string) => visibleMenus.includes(menu);
 
   const renderContent = () => {
     switch (currentView) {
@@ -72,6 +73,14 @@ const DashboardCoordinador: React.FC = () => {
         return <NuevoHorario />;
       case 'ReportarProblema':
         return <ReportarProblema />;
+      case 'EditarMesas':
+        return <EditarMesas />;
+      case 'ImprimirMesas':
+        return <ImprimirMesas />;
+      case 'InscriptosMesas':
+        return <InscriptosMesas />;
+      case 'CalificacionesFinales':
+        return <CalificacionesFinales />;
       default:
         return (
           <>
@@ -86,7 +95,7 @@ const DashboardCoordinador: React.FC = () => {
     <AppLayout variant="dashboard">
       <DashboardContainer>
         <Sidebar>
-          {/* Menú DOCENTES */}
+          {/* DOCENTES */}
           <MenuItem
             onMouseEnter={() => handleMouseEnter('docentes')}
             onMouseLeave={() => handleMouseLeave('docentes')}
@@ -95,7 +104,7 @@ const DashboardCoordinador: React.FC = () => {
               <FaClipboardList style={{ marginRight: '0.2rem' }} />
               DOCENTES <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
             </span>
-            <SubMenu $isVisible={visibleSubMenu === 'docentes'}>
+            <SubMenu $isVisible={isVisible('docentes')}>
               <li onClick={() => handleSubMenuClick('BuscarDocente')}>
                 <FaBook style={{ marginRight: '0.5rem' }} />
                 BUSCAR
@@ -107,7 +116,7 @@ const DashboardCoordinador: React.FC = () => {
             </SubMenu>
           </MenuItem>
 
-          {/* Menú ALUMNOS */}
+          {/* ALUMNOS */}
           <MenuItem
             onMouseEnter={() => handleMouseEnter('alumnos')}
             onMouseLeave={() => handleMouseLeave('alumnos')}
@@ -116,7 +125,7 @@ const DashboardCoordinador: React.FC = () => {
               <FaUsers style={{ marginRight: '0.2rem' }} />
               ALUMNOS <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
             </span>
-            <SubMenu $isVisible={visibleSubMenu === 'alumnos'}>
+            <SubMenu $isVisible={isVisible('alumnos')}>
               <li onClick={() => handleSubMenuClick('BuscarAlumno')}>
                 <FaBook style={{ marginRight: '0.5rem' }} />
                 BUSCAR
@@ -128,7 +137,7 @@ const DashboardCoordinador: React.FC = () => {
             </SubMenu>
           </MenuItem>
 
-          {/* Menú MATERIAS */}
+          {/* MATERIAS */}
           <MenuItem
             onMouseEnter={() => handleMouseEnter('materias')}
             onMouseLeave={() => handleMouseLeave('materias')}
@@ -137,12 +146,11 @@ const DashboardCoordinador: React.FC = () => {
               <FaBook style={{ marginRight: '0.2rem' }} />
               MATERIAS <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
             </span>
-            <SubMenu $isVisible={visibleSubMenu === 'materias'}>
+            <SubMenu $isVisible={isVisible('materias')}>
               <li onClick={() => handleSubMenuClick('BuscarMaterias')}>
                 <FaBook style={{ marginRight: '0.5rem' }} />
                 BUSCAR
               </li>
-              {/* Submenú HORARIOS */}
               <li
                 onMouseEnter={() => handleMouseEnter('horarios')}
                 onMouseLeave={() => handleMouseLeave('horarios')}
@@ -150,7 +158,7 @@ const DashboardCoordinador: React.FC = () => {
                 <span>
                   HORARIOS <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
                 </span>
-                <SubMenu $isVisible={visibleSubMenu === 'horarios'}>
+                <SubMenu $isVisible={isVisible('horarios')}>
                   <li onClick={() => handleSubMenuClick('EditarHorarios')}>
                     <FaEdit style={{ marginRight: '0.5rem' }} />
                     EDITAR
@@ -163,23 +171,44 @@ const DashboardCoordinador: React.FC = () => {
               </li>
             </SubMenu>
           </MenuItem>
-
-          {/* Menú MESAS */}
-          <MenuItem onClick={() => handleSubMenuClick('EvaluacionesFinales')}>
+          
+          {/* MESAS */}
+          <MenuItem
+            onMouseEnter={() => handleMouseEnter('mesas')}
+            onMouseLeave={() => handleMouseLeave('mesas')}
+          >
             <span>
               <FaEdit style={{ marginRight: '0.2rem' }} />
-              MESAS
+              MESAS <FaChevronRight style={{ marginLeft: '-0.2rem' }} />
             </span>
+            <SubMenu $isVisible={isVisible('mesas')}>
+              <li onClick={() => handleSubMenuClick('EditarMesas')}>
+                <FaEdit style={{ marginRight: '0.5rem' }} />
+                EDITAR
+              </li>
+              <li onClick={() => handleSubMenuClick('ImprimirMesas')}>
+                <FaBook style={{ marginRight: '0.5rem' }} />
+                IMPRIMIR
+              </li>
+              <li onClick={() => handleSubMenuClick('InscriptosMesas')}>
+                <FaUsers style={{ marginRight: '0.5rem' }} />
+                INSCRIPTOS
+              </li>
+              <li onClick={() => handleSubMenuClick('CalificacionesFinales')}>
+                <FaCalendarAlt style={{ marginRight: '0.5rem' }} />
+                CALIFICACIONES FINALES
+              </li>
+            </SubMenu>
           </MenuItem>
 
-          {/* Botón Reportar Problema */}
+          {/* Reportar */}
           <ReportButton onClick={() => handleSubMenuClick('ReportarProblema')}>
             <FaBug style={{ marginRight: '0.5rem' }} />
             Reportar Problema
           </ReportButton>
         </Sidebar>
 
-        {/* Área de contenido dinámico */}
+        {/* Área contenido */}
         <ContentArea>{renderContent()}</ContentArea>
       </DashboardContainer>
     </AppLayout>
