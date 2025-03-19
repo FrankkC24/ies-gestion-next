@@ -14,10 +14,10 @@ import {
   DashboardContainer,
   Sidebar,
   MenuItem,
-  SubMenu,
   ContentArea,
   ReportButton,
 } from '@/components/Dashboard/Docente/DashboardDocente.styles';
+import { SubMenu } from '@/components/Dashboard/Shared/SubMenu';
 
 // Importación de vistas internas
 import DocenteMesas from '@/components/DashboardViews/Docente/DocentesMesas/DocentesMesas';

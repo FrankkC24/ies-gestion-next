@@ -15,10 +15,11 @@ import {
   DashboardContainer,
   Sidebar,
   MenuItem,
-  SubMenu,
   ContentArea,
   ReportButton,
 } from '@/components/Dashboard/Coordinador/DashboardCoordinador.styles';
+import { SubMenu } from '@/components/Dashboard/Shared/SubMenu';
+
 import ReportarProblema from '@/components/ReportarProblema/ReportarProblema';
 import AppLayout from '@/components/Layout/AppLayout';
 import BuscarDocentes from '@/components/DashboardViews/Coordinador/BuscarDocentes/BuscarDocentes';

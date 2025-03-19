@@ -11,6 +11,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^4.0.0
         version: 4.0.0(react-hook-form@7.54.2(react@19.0.0))
+      '@styled-system/should-forward-prop':
+        specifier: ^5.1.5
+        version: 5.1.5
       '@types/styled-components':
         specifier: ^5.1.34
         version: 5.1.34
@@ -60,6 +63,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.0.3(@types/react@19.0.8)
+      '@types/styled-system__should-forward-prop':
+        specifier: ^5.1.4
+        version: 5.1.4
       babel-plugin-styled-components:
         specifier: ^2.1.4
         version: 2.1.4(@babel/core@7.26.7)(styled-components@6.1.14(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
@@ -169,8 +175,17 @@ packages:
   '@emnapi/runtime@1.3.1':
     resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
 
+  '@emotion/is-prop-valid@0.8.8':
+    resolution: {integrity: sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==}
+
   '@emotion/is-prop-valid@1.2.2':
     resolution: {integrity: sha512-uNsoYd37AFmaCdXlg6EYD1KaPOaRWRByMCYzbKUX4+hhMfrxdVSelShywL4JVaAeM/eHUOSprYBQls+/neX3pw==}
+
+  '@emotion/memoize@0.7.4':
+    resolution: {integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==}
+
+  '@emotion/memoize@0.7.5':
+    resolution: {integrity: sha512-igX9a37DR2ZPGYtV6suZ6whr8pTFtyHL3K/oLUotxpSVO2ASaprmAe2Dkq7tBo7CRY7MMDrAa9nuQP9/YG8FxQ==}
 
   '@emotion/memoize@0.8.1':
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
@@ -465,6 +480,48 @@ packages:
   '@rushstack/eslint-patch@1.10.5':
     resolution: {integrity: sha512-kkKUDVlII2DQiKy7UstOR1ErJP8kUKAQ4oa+SQtM0K+lPdmmjj0YnnxBgtTVYH7mUKtbsxeFC9y0AmK7Yb78/A==}
 
+  '@styled-system/background@5.1.2':
+    resolution: {integrity: sha512-jtwH2C/U6ssuGSvwTN3ri/IyjdHb8W9X/g8Y0JLcrH02G+BW3OS8kZdHphF1/YyRklnrKrBT2ngwGUK6aqqV3A==}
+
+  '@styled-system/border@5.1.5':
+    resolution: {integrity: sha512-JvddhNrnhGigtzWRCVuAHepniyVi6hBlimxWDVAdcTuk7aRn9BYJUwfHslURtwYFsF5FoEs8Zmr1oZq2M1AP0A==}
+
+  '@styled-system/color@5.1.2':
+    resolution: {integrity: sha512-1kCkeKDZkt4GYkuFNKc7vJQMcOmTl3bJY3YBUs7fCNM6mMYJeT1pViQ2LwBSBJytj3AB0o4IdLBoepgSgGl5MA==}
+
+  '@styled-system/core@5.1.2':
+    resolution: {integrity: sha512-XclBDdNIy7OPOsN4HBsawG2eiWfCcuFt6gxKn1x4QfMIgeO6TOlA2pZZ5GWZtIhCUqEPTgIBta6JXsGyCkLBYw==}
+
+  '@styled-system/css@5.1.5':
+    resolution: {integrity: sha512-XkORZdS5kypzcBotAMPBoeckDs9aSZVkvrAlq5K3xP8IMAUek+x2O4NtwoSgkYkWWzVBu6DGdFZLR790QWGG+A==}
+
+  '@styled-system/flexbox@5.1.2':
+    resolution: {integrity: sha512-6hHV52+eUk654Y1J2v77B8iLeBNtc+SA3R4necsu2VVinSD7+XY5PCCEzBFaWs42dtOEDIa2lMrgL0YBC01mDQ==}
+
+  '@styled-system/grid@5.1.2':
+    resolution: {integrity: sha512-K3YiV1KyHHzgdNuNlaw8oW2ktMuGga99o1e/NAfTEi5Zsa7JXxzwEnVSDSBdJC+z6R8WYTCYRQC6bkVFcvdTeg==}
+
+  '@styled-system/layout@5.1.2':
+    resolution: {integrity: sha512-wUhkMBqSeacPFhoE9S6UF3fsMEKFv91gF4AdDWp0Aym1yeMPpqz9l9qS/6vjSsDPF7zOb5cOKC3tcKKOMuDCPw==}
+
+  '@styled-system/position@5.1.2':
+    resolution: {integrity: sha512-60IZfMXEOOZe3l1mCu6sj/2NAyUmES2kR9Kzp7s2D3P4qKsZWxD1Se1+wJvevb+1TP+ZMkGPEYYXRyU8M1aF5A==}
+
+  '@styled-system/shadow@5.1.2':
+    resolution: {integrity: sha512-wqniqYb7XuZM7K7C0d1Euxc4eGtqEe/lvM0WjuAFsQVImiq6KGT7s7is+0bNI8O4Dwg27jyu4Lfqo/oIQXNzAg==}
+
+  '@styled-system/should-forward-prop@5.1.5':
+    resolution: {integrity: sha512-+rPRomgCGYnUIaFabDoOgpSDc4UUJ1KsmlnzcEp0tu5lFrBQKgZclSo18Z1URhaZm7a6agGtS5Xif7tuC2s52Q==}
+
+  '@styled-system/space@5.1.2':
+    resolution: {integrity: sha512-+zzYpR8uvfhcAbaPXhH8QgDAV//flxqxSjHiS9cDFQQUSznXMQmxJegbhcdEF7/eNnJgHeIXv1jmny78kipgBA==}
+
+  '@styled-system/typography@5.1.2':
+    resolution: {integrity: sha512-BxbVUnN8N7hJ4aaPOd7wEsudeT7CxarR+2hns8XCX1zp0DFfbWw4xYa/olA0oQaqx7F1hzDg+eRaGzAJbF+jOg==}
+
+  '@styled-system/variant@5.1.5':
+    resolution: {integrity: sha512-Yn8hXAFoWIro8+Q5J8YJd/mP85Teiut3fsGVR9CAxwgNfIAiqlYxsk5iHU7VHJks/0KjL4ATSjmbtCDC/4l1qw==}
+
   '@swc/counter@0.1.3':
     resolution: {integrity: sha512-e2BR4lsJkkRlKZ/qCHPw9ZaSxc0MVUd7gtbtaB7aMvHeJVYe8sOB8DBZkP2DtISHGSku9sCK6T6cnY0CtXrOCQ==}
 
@@ -496,6 +553,9 @@ packages:
 
   '@types/styled-components@5.1.34':
     resolution: {integrity: sha512-mmiVvwpYklFIv9E8qfxuPyIt/OuyIrn6gMOAMOFUO3WJfSrSE+sGUoa4PiZj77Ut7bKZpaa6o1fBKS/4TOEvnA==}
+
+  '@types/styled-system__should-forward-prop@5.1.4':
+    resolution: {integrity: sha512-Dh8OS/TeusBN+9mL/AUMHa71XNV8YFEEqT58xaKGrPqllC0wosZMmkTfM2pAzJailWPYaXD3r88a82Lu71j1Kg==}
 
   '@types/stylis@4.2.5':
     resolution: {integrity: sha512-1Xve+NMN7FWjY14vLoY5tL3BVEQ/n42YLwaqJIPYhotZ9uBHt87VceMwWQpzmdEt2TNXIorIFG+YeCUUW7RInw==}
@@ -1826,6 +1886,9 @@ packages:
       babel-plugin-macros:
         optional: true
 
+  styled-system@5.1.5:
+    resolution: {integrity: sha512-7VoD0o2R3RKzOzPK0jYrVnS8iJdfkKsQJNiLRDjikOpQVqQHns/DXWaPZOH4tIKkhAT7I6wIsy9FWTWh2X3q+A==}
+
   stylis@4.3.2:
     resolution: {integrity: sha512-bhtUjWd/z6ltJiQwg0dUfxEJ+W+jdqQd8TbWLWyeIJHlnsqmGLRFFd8e5mA0AZi/zx90smXRlN66YMTcaSFifg==}
 
@@ -2098,9 +2161,17 @@ snapshots:
       tslib: 2.8.1
     optional: true
 
+  '@emotion/is-prop-valid@0.8.8':
+    dependencies:
+      '@emotion/memoize': 0.7.4
+
   '@emotion/is-prop-valid@1.2.2':
     dependencies:
       '@emotion/memoize': 0.8.1
+
+  '@emotion/memoize@0.7.4': {}
+
+  '@emotion/memoize@0.7.5': {}
 
   '@emotion/memoize@0.8.1': {}
 
@@ -2342,6 +2413,63 @@ snapshots:
 
   '@rushstack/eslint-patch@1.10.5': {}
 
+  '@styled-system/background@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/border@5.1.5':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/color@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/core@5.1.2':
+    dependencies:
+      object-assign: 4.1.1
+
+  '@styled-system/css@5.1.5': {}
+
+  '@styled-system/flexbox@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/grid@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/layout@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/position@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/shadow@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/should-forward-prop@5.1.5':
+    dependencies:
+      '@emotion/is-prop-valid': 0.8.8
+      '@emotion/memoize': 0.7.5
+      styled-system: 5.1.5
+
+  '@styled-system/space@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/typography@5.1.2':
+    dependencies:
+      '@styled-system/core': 5.1.2
+
+  '@styled-system/variant@5.1.5':
+    dependencies:
+      '@styled-system/core': 5.1.2
+      '@styled-system/css': 5.1.5
+
   '@swc/counter@0.1.3': {}
 
   '@swc/helpers@0.5.15':
@@ -2376,6 +2504,8 @@ snapshots:
       '@types/hoist-non-react-statics': 3.3.6
       '@types/react': 19.0.8
       csstype: 3.1.3
+
+  '@types/styled-system__should-forward-prop@5.1.4': {}
 
   '@types/stylis@4.2.5': {}
 
@@ -3976,6 +4106,22 @@ snapshots:
       react: 19.0.0
     optionalDependencies:
       '@babel/core': 7.26.7
+
+  styled-system@5.1.5:
+    dependencies:
+      '@styled-system/background': 5.1.2
+      '@styled-system/border': 5.1.5
+      '@styled-system/color': 5.1.2
+      '@styled-system/core': 5.1.2
+      '@styled-system/flexbox': 5.1.2
+      '@styled-system/grid': 5.1.2
+      '@styled-system/layout': 5.1.2
+      '@styled-system/position': 5.1.2
+      '@styled-system/shadow': 5.1.2
+      '@styled-system/space': 5.1.2
+      '@styled-system/typography': 5.1.2
+      '@styled-system/variant': 5.1.5
+      object-assign: 4.1.1
 
   stylis@4.3.2: {}
 

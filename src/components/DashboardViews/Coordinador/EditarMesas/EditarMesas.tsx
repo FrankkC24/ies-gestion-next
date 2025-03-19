@@ -58,7 +58,7 @@ const EditarMesas: React.FC = () => {
 
   return (
     <EditarMesasContainer>
-      <h2>EDITAR MESAS EXÁMENES JC</h2>
+      <h2>EDITAR MESAS EXÁMENES</h2>
       <FilterContainer>
         <div>
           <label>CARRERA:</label>

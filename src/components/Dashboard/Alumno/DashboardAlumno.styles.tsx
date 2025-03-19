@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import shouldForwardProp from '@styled-system/should-forward-prop';
 
 export const DashboardContainer = styled.div`
   display: flex;
@@ -17,7 +18,9 @@ export const Sidebar = styled.div`
   gap: 1rem; /* Espaciado uniforme entre los botones */
 `;
 
-export const MenuItem = styled.div`
+export const MenuItem = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'isActive', // Filtramos la prop
+})<{ isActive?: boolean }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -31,7 +34,7 @@ export const MenuItem = styled.div`
   border: 2px solid white;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 
   span {
     display: flex;
@@ -44,45 +47,11 @@ export const MenuItem = styled.div`
     box-shadow: 0 4px 6px rgba(255, 255, 255, 0.4);
   }
 
-  &:active {
+  ${({ isActive }) =>
+    isActive &&
+    `
     transform: translateY(2px);
-  }
-`;
-
-
-export const SubMenu = styled.ul<{ $isVisible: boolean }>`
-  display: ${({ $isVisible }) => ($isVisible ? 'block' : 'none')};
-  position: absolute;
-  top: 0;
-  left: 100%;
-  background-color: #d32f2f; /* Mejora el contraste */
-  list-style: none;
-  padding: 0.5rem;
-  border-radius: 5px;
-  box-shadow: 0 12px 16px rgba(0, 0, 0, 0.8); /* Sombra más intensa */
-  z-index: 10;
-
-  li {
-    display: flex;
-    align-items: center;
-    padding: 0.5rem 1rem;
-    color: white;
-    cursor: pointer;
-    font-size: 0.9rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2); /* Línea separadora */
-    transition: background-color 0.3s ease, transform 0.2s ease;
-
-    &:hover {
-      background-color: #b71c1c; /* Color más oscuro al pasar el mouse */
-      transform: scale(1.05); /* Ligero aumento al pasar el mouse */
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Sombra adicional al hacer hover */
-    }
-  }
-
-  /* Elimina la línea separadora en el último elemento */
-  li:last-child {
-    border-bottom: none;
-  }
+  `}
 `;
 
 export const ContentArea = styled.div`

@@ -16,11 +16,11 @@ import {
   DashboardContainer,
   Sidebar,
   MenuItem,
-  SubMenu,
   ContentArea,
   ReportButton,
 } from './DashboardAlumno.styles';
 import AppLayout from '@/components/Layout/AppLayout';
+import { SubMenu } from '@/components/Dashboard/Shared/SubMenu';
 
 import MesasVer from '@/components/DashboardViews/Alumno/MesasVer/MesasVer';
 import AsistenciasVer from '@/components/DashboardViews/Alumno/AsistenciasVer/AsistenciasVer';
@@ -28,15 +28,20 @@ import MateriasCalificaciones from '@/components/DashboardViews/Alumno/MateriasC
 import MesasInscribirse from '@/components/DashboardViews/Alumno/MesasInscribirse/MesasInscribirse';
 import MateriasCorrelativas from '@/components/DashboardViews/Alumno/MateriasCorrelativas/MateriasCorrelativas';
 import MateriasHorarios from '@/components/DashboardViews/Alumno/MateriasHorarios/MateriasHorarios';
-
 import ReportarProblema from '@/components/ReportarProblema/ReportarProblema';
 
 const DashboardAlumno = () => {
   const [visibleSubMenu, setVisibleSubMenu] = useState<string | null>(null);
   const [currentView, setCurrentView] = useState<string>('Bienvenido');
+  const [activeMenu, setActiveMenu] = useState<string | null>(null); // 👈 Nuevo estado
 
   const handleMouseEnter = (menu: string) => setVisibleSubMenu(menu);
   const handleMouseLeave = () => setVisibleSubMenu(null);
+
+  const handleMenuClick = (menu: string) => {
+    setActiveMenu(menu); // Activar animación solo en el botón principal
+    setTimeout(() => setActiveMenu(null), 150); // Quitar animación después de 150ms
+  };
 
   const handleSubMenuClick = (view: string) => {
     setCurrentView(view);
@@ -67,8 +72,10 @@ const DashboardAlumno = () => {
         <Sidebar>
           {/* Menú Mesas */}
           <MenuItem
+            isActive={activeMenu === 'mesas'}
             onMouseEnter={() => handleMouseEnter('mesas')}
             onMouseLeave={handleMouseLeave}
+            onClick={() => handleMenuClick('mesas')}
           >
             <span>
               <FaCalendarAlt style={{ marginRight: '0.5rem' }} />
@@ -88,8 +95,10 @@ const DashboardAlumno = () => {
 
           {/* Menú Materias */}
           <MenuItem
+            isActive={activeMenu === 'materias'}
             onMouseEnter={() => handleMouseEnter('materias')}
             onMouseLeave={handleMouseLeave}
+            onClick={() => handleMenuClick('materias')}
           >
             <span>
               <FaBookOpen style={{ marginRight: '0.5rem' }} />
@@ -113,8 +122,10 @@ const DashboardAlumno = () => {
 
           {/* Menú Asistencias */}
           <MenuItem
+            isActive={activeMenu === 'asistencias'}
             onMouseEnter={() => handleMouseEnter('asistencias')}
             onMouseLeave={handleMouseLeave}
+            onClick={() => handleMenuClick('asistencias')}
           >
             <span>
               <FaClipboardList style={{ marginRight: '0.5rem' }} />
@@ -128,6 +139,7 @@ const DashboardAlumno = () => {
             </SubMenu>
           </MenuItem>
 
+          {/* Reportar Problema */}
           <ReportButton onClick={() => handleSubMenuClick('ReportarProblema')}>
             <FaBug style={{ marginRight: '0.5rem' }} />
             Reportar Problema
