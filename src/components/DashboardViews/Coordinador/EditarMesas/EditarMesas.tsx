@@ -89,7 +89,7 @@ const EditarMesas: React.FC = () => {
             <thead>
               <tr>
                 <th>Materia</th>
-                <th>Llam</th>
+                <th>Llamado</th>
                 <th>Fecha</th>
                 <th>Hora</th>
                 <th>Titular</th>
@@ -110,7 +110,7 @@ const EditarMesas: React.FC = () => {
                     <ActionButton onClick={() => handleEdit(index)}>
                       <FaEdit />
                     </ActionButton>
-                    <ActionButton onClick={() => handleDelete(index)} danger>
+                    <ActionButton onClick={() => handleDelete(index)} $danger>
                       <FaTrash />
                     </ActionButton>
                   </td>
