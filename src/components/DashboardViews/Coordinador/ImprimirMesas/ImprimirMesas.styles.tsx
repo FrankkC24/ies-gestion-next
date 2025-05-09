@@ -142,3 +142,13 @@ export const Table = styled.table`
     background-color: #f1f1f1;
   }
 `;
+
+// Iframe oculto para la impresión
+export const HiddenIframe = styled.iframe`
+  position: absolute;
+  width: 0;
+  height: 0;
+  border: 0;
+  visibility: hidden;
+  display: none;
+`;

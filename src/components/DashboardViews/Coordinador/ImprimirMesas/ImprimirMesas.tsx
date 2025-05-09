@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaPrint } from 'react-icons/fa';
 import {
   ImprimirMesasContainer,
@@ -10,6 +10,7 @@ import {
   TableWrapper,
   Table,
   PrintButton,
+  HiddenIframe
 } from './ImprimirMesas.styles';
 
 interface Mesa {
@@ -30,6 +31,10 @@ const ImprimirMesas: React.FC = () => {
   const [mesas, setMesas] = useState<Mesa[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [carreraText, setCarreraText] = useState('');
+  const [isPrinting, setIsPrinting] = useState(false);
+  
+  // Referencia al iframe oculto
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Estados para controlar la habilitación en cascada
   const isCarreraEnabled = searchType !== '';
@@ -39,7 +44,39 @@ const ImprimirMesas: React.FC = () => {
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    
+    // Escuchar el evento afterprint para resetear el estado de impresión
+    if (typeof window !== 'undefined') {
+      window.addEventListener('afterprint', handleAfterPrint);
+      
+      // Añadir un controlador para restablecer el estado si el diálogo de impresión se cierra
+      const checkPrintState = () => {
+        // Si ha pasado más de 5 segundos y seguimos en estado de impresión, asumimos que se canceló
+        if (isPrinting) {
+          setTimeout(() => {
+            // Volver a verificar por si el estado cambió mientras esperábamos
+            if (isPrinting) {
+              setIsPrinting(false);
+            }
+          }, 5000);
+        }
+      };
+      
+      // Ejecutar la verificación cuando cambia el estado de impresión
+      if (isPrinting) {
+        checkPrintState();
+      }
+      
+      return () => {
+        window.removeEventListener('afterprint', handleAfterPrint);
+      };
+    }
+  }, [isPrinting]);
+
+  const handleAfterPrint = () => {
+    // Resetear el estado de impresión
+    setIsPrinting(false);
+  };
 
   // Resetear valores cuando se cambia una selección superior
   useEffect(() => {
@@ -130,75 +167,32 @@ const ImprimirMesas: React.FC = () => {
   };
 
   const handlePrint = () => {
+    // Si ya estamos en proceso de impresión, no hacer nada
+    if (isPrinting || !iframeRef.current) return;
+    
+    // Marcar que estamos en proceso de impresión
+    setIsPrinting(true);
+    
     const turnoText = selectedTurno || '2026-Feb-Mar';
     const llamadoText = selectedLlamado === '1' ? '1º Llamado' : selectedLlamado === '2' ? '2º Llamado' : '1º Llamado';
     const carreraInfoText = carreraText ? carreraText : 'ADMINISTRACION DE EMPRESAS';
     
-    // Crear la página de impresión
-    const printWindow = window.open('', '_blank', 'width=800,height=600');
-    
-    if (!printWindow) {
-      alert('Por favor, permite las ventanas emergentes para imprimir');
-      return;
-    }
-    
-    // Estilos y contenido para la nueva ventana
-    printWindow.document.write(`
+    // Crear contenido HTML para el documento de impresión
+    const printContent = `
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Mesas de Exámenes - Vista Previa</title>
+        <title></title>
         <style>
-          @media print {
-            @page {
-              size: portrait;
-              margin: 10mm;
-            }
+          @page {
+            size: portrait;
+            margin: 15mm;
           }
           
           body {
             font-family: "Times New Roman", Times, serif;
             margin: 0;
-            padding: 20px;
-          }
-          
-          .preview-header {
-            background-color: #860000;
-            color: white;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            border-radius: 4px;
-          }
-          
-          .preview-header h1 {
-            margin: 0;
-            font-size: 18px;
-          }
-          
-          .print-button {
-            background-color: #009688;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            font-size: 14px;
-            cursor: pointer;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-          }
-          
-          .print-button:hover {
-            background-color: #00796b;
-          }
-          
-          @media print {
-            .preview-header {
-              display: none;
-            }
+            padding: 0;
           }
           
           .header {
@@ -242,7 +236,7 @@ const ImprimirMesas: React.FC = () => {
           }
           
           th, td {
-            border: 2px solid black; /* Líneas más gruesas */
+            border: 2px solid black;
             padding: 8px;
             text-align: left;
             font-size: 10pt;
@@ -252,13 +246,16 @@ const ImprimirMesas: React.FC = () => {
             font-weight: bold;
           }
           
-          /* Alternancia de colores más definida */
-          tr:nth-child(odd) {
-            background-color: white;
+          /* Estas reglas son realmente importantes para la alternancia de colores */
+          tr:nth-child(even) {
+            background-color: #d9d9d9 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            color-adjust: exact !important;
           }
           
-          tr:nth-child(even) {
-            background-color: #f2f2f2;
+          tr:nth-child(odd) {
+            background-color: white !important;
           }
           
           .footer {
@@ -266,6 +263,8 @@ const ImprimirMesas: React.FC = () => {
             justify-content: space-between;
             font-size: 10pt;
             margin-top: 20px;
+            position: relative;
+            bottom: 0;
           }
           
           .footer .web {
@@ -278,23 +277,12 @@ const ImprimirMesas: React.FC = () => {
         </style>
       </head>
       <body>
-        <div class="preview-header">
-          <h1>Vista Previa para Impresión</h1>
-          <button class="print-button" onclick="window.print(); window.close();">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
-              <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
-            </svg>
-            Imprimir
-          </button>
-        </div>
-        
         <div class="header">
           <img class="logo" src="/assets/escudo.png" alt="IES Logo" />
           <div class="title">
             <h1>INSTITUTO SUPERIOR PARTICULAR INCORPORADO Nº 9233</h1>
             <h2>ESTUDIOS SUPERIORES DE SANTA FE</h2>
-            <p>TUCUMAN 2731 1½ PISO - Tel : 0342-4558371 / 0342-4525658</p>
+            <p>TUCUMAN 2731 1° PISO - Tel : 0342-4558371 / 0342-4525658</p>
             <p class="report-title">Mesas de Examenes ${turnoText} ${llamadoText} - ${carreraInfoText} - T:F/C/P/DRH</p>
           </div>
         </div>
@@ -312,7 +300,7 @@ const ImprimirMesas: React.FC = () => {
           </thead>
           <tbody>
             ${mesas.map((mesa, index) => `
-              <tr>
+              <tr class="${index % 2 === 1 ? 'row-alternate' : ''}">
                 <td>${mesa.asignatura}</td>
                 <td>${mesa.fecha}</td>
                 <td>${mesa.hora}</td>
@@ -330,19 +318,66 @@ const ImprimirMesas: React.FC = () => {
             <span class="web">www.iessantafe.edu.ar</span>
           </div>
           <div class="page-number">
-            1 of ${mesas.length > 10 ? 2 : 1}
+            1 de ${mesas.length > 10 ? 2 : 1}
           </div>
         </div>
+        
+        <script>
+          window.onload = function() {
+            // Asegurarse de que no hay título
+            document.title = '';
+            
+            // Función para detectar cierre de diálogo de impresión
+            function notifyPrintClosed() {
+              window.parent.postMessage('printClosed', '*');
+            }
+            
+            // Registrar eventos para detectar cancelación
+            window.addEventListener('afterprint', notifyPrintClosed);
+            
+            // Dar tiempo para cargar recursos e imprimir
+            setTimeout(function() {
+              try {
+                window.print();
+              } catch (e) {
+                // Si falla la impresión, notificar también
+                notifyPrintClosed();
+              }
+            }, 500);
+            
+            // Timeout de seguridad para reset (por si el evento afterprint no se dispara)
+            setTimeout(notifyPrintClosed, 10000);
+          };
+        </script>
       </body>
       </html>
-    `);
+    `;
     
-    printWindow.document.close();
+    // Acceder al documento del iframe
+    const iframeDoc = iframeRef.current.contentDocument || 
+                     (iframeRef.current.contentWindow && iframeRef.current.contentWindow.document);
     
-    // Esperar a que se cargue la imagen y otros recursos
-    printWindow.onload = function() {
-      // El usuario debe hacer clic en el botón para imprimir
-    };
+    if (iframeDoc) {
+      // Escribir el contenido en el iframe
+      iframeDoc.open();
+      iframeDoc.write(printContent);
+      iframeDoc.close();
+      
+      // Escuchar mensajes del iframe para detectar cuándo termina el proceso
+      const messageHandler = function(event: MessageEvent) {
+        if (event.data === 'printClosed') {
+          setIsPrinting(false);
+          window.removeEventListener('message', messageHandler);
+        }
+      };
+      
+      window.addEventListener('message', messageHandler);
+      
+      // Timeout de seguridad por si no recibimos el mensaje
+      setTimeout(() => {
+        setIsPrinting(false);
+      }, 15000);
+    }
   };
 
   if (!isClient) return null;
@@ -417,8 +452,11 @@ const ImprimirMesas: React.FC = () => {
       {/* Botón imprimir y tabla de resultados en pantalla */}
       {mesas.length > 0 && (
         <>
-          <PrintButton onClick={handlePrint}>
-            <FaPrint /> IMPRIMIR LISTADO
+          <PrintButton 
+            onClick={handlePrint}
+            disabled={isPrinting}
+          >
+            <FaPrint /> {isPrinting ? 'PROCESANDO...' : 'IMPRIMIR LISTADO'}
           </PrintButton>
           
           <TableWrapper>
@@ -447,6 +485,9 @@ const ImprimirMesas: React.FC = () => {
               </tbody>
             </Table>
           </TableWrapper>
+          
+          {/* Iframe oculto para impresión */}
+          <HiddenIframe ref={iframeRef} title="Print Frame" />
         </>
       )}
     </ImprimirMesasContainer>
