@@ -225,149 +225,163 @@ const InscriptosMesas: React.FC = () => {
   };
 
 const handlePrint = () => {
-  // Si ya estamos en proceso de impresión o no hay iframe, no hacer nada
   if (isPrinting || !iframeRef.current) return;
-  
-  // Marcar que estamos en proceso de impresión
   setIsPrinting(true);
-  
-  // Crear contenido HTML para el documento de impresión
+
   const printContent = `
     <!DOCTYPE html>
     <html>
     <head>
-      <title></title>
+      <meta charset="UTF-8">
+      <title>Acta Examen</title>
       <style>
         @page {
-          size: portrait;
-          margin: 15mm;
+          size: A4 portrait;
+          margin: 1.5cm;
         }
-        
+
         body {
           font-family: "Times New Roman", Times, serif;
+          font-size: 11pt;
           margin: 0;
           padding: 0;
-          font-size: 12pt;
         }
-        
-        .document-container {
-          display: flex;
-          flex-direction: column;
-          min-height: 29.7cm;
-          width: 21cm;
-          margin: 0 auto;
-          position: relative;
+
+        .acta-container {
+          width: 100%;
         }
-        
+
         .header {
           display: flex;
           align-items: center;
-          margin-bottom: 5mm;
+          margin-bottom: 15px;
         }
-        
+
         .logo {
-          width: 60px;
-          height: 60px;
-          margin-right: 10mm;
+          width: 90px;
+          height: 110px;
+          margin-right: 15px;
         }
-        
-        .title {
-          flex: 1;
-        }
-        
-        .title h1 {
-          font-size: 13pt;
+
+        .header-info h1 {
+          font-size: 14pt;
           font-weight: bold;
-          margin: 0 0 1mm 0;
+          margin: 0 0 4px 0;
         }
-        
-        .title h2 {
+
+        .header-info h2 {
           font-size: 12pt;
           font-weight: bold;
-          margin: 0 0 1mm 0;
+          margin: 0 0 4px 0;
         }
-        
-        .title p {
-          font-size: 11pt;
-          margin: 0 0 1mm 0;
+
+        .header-info p {
+          font-size: 10pt;
+          margin: 0 0 3px 0;
         }
-        
-        .course-info {
-          display: flex;
-          justify-content: space-between;
-          margin-bottom: 5mm;
-          font-size: 11pt;
-        }
-        
+
         table {
           width: 100%;
           border-collapse: collapse;
-          page-break-inside: avoid;
+          table-layout: fixed;
+          margin-bottom: 30px;
         }
-        
+
+        thead tr:nth-child(1) th {
+          border-bottom: none;
+        }
+
+        thead tr:nth-child(2) th {
+          border-top: none;
+          padding-top: 6px;
+          padding-bottom: 6px;
+        }
+
+        tr {
+          height: 25px;
+        }
+
         th, td {
           border: 1px solid black;
-          padding: 2mm;
+          padding: 4px 4px;
           text-align: center;
-          font-size: 11pt;
+          vertical-align: middle;
+          font-size: 10pt;
+          white-space: nowrap;
+          overflow: hidden;
         }
-        
-        th {
-          font-weight: bold;
+
+        th:nth-child(1), td:nth-child(1) { width: 5%; }
+        th:nth-child(2), td:nth-child(2) { width: 30%; text-align: left; padding-left: 5px; }
+        th:nth-child(3), td:nth-child(3),
+        th:nth-child(4), td:nth-child(4),
+        th:nth-child(5), td:nth-child(5),
+        th:nth-child(6), td:nth-child(6),
+        th:nth-child(7), td:nth-child(7) { width: 10%; }
+        th:nth-child(8), td:nth-child(8) { width: 15%; }
+
+        .firmas-container {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 30px;
         }
-        
-        .empty-row td {
-          height: 7mm;
+
+        .firma {
+          width: 30%;
+          text-align: center;
         }
-        
+
+        .firma-linea {
+          width: 100%;
+          border-top: 2px solid black;
+          margin-bottom: 4px;
+        }
+
+        .firma-texto {
+          font-size: 10pt;
+        }
+
+        .resultados {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 10px;
+          font-size: 10pt;
+        }
+
+        .ubicacion-fecha {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 10px;
+          font-size: 10pt;
+        }
+
         .footer {
           display: flex;
           justify-content: space-between;
-          margin-top: 15mm;
-          width: 100%;
-          page-break-inside: avoid;
+          margin-top: 40px;
+          font-size: 9pt;
         }
-        
-        .signature-section {
+
+        .contacto {
           display: flex;
-          flex-direction: column;
-          align-items: center;
-          width: 30%;
+          gap: 15px;
         }
-        
-        .signature-line {
-          width: 100%;
-          text-align: center;
-          border-top: 1px solid black;
-          padding-top: 2mm;
-          margin-bottom: 5mm;
-        }
-        
-        .footer-info {
-          display: flex;
-          justify-content: space-between;
-          width: 100%;
-          font-size: 10pt;
-          margin-top: 10mm;
-          position: absolute;
-          bottom: 0;
-        }
-        
-        .footer-left {
-          display: flex;
-          gap: 5mm;
-        }
-        
-        .footer-right {
-          text-align: right;
+
+        @media print {
+          body {
+            -webkit-print-color-adjust: exact;
+          }
+          table {
+            page-break-inside: avoid;
+          }
         }
       </style>
     </head>
     <body>
-      <div class="document-container">
+      <div class="acta-container">
         <div class="header">
-          <img class="logo" src="/assets/escudo.png" alt="IES Logo" />
-          <div class="title">
+          <img class="logo" src="/assets/escudo.png" alt="Logo" />
+          <div class="header-info">
             <h1>INSTITUTO SUPERIOR PARTICULAR INCORPORADO Nº 9233</h1>
             <h2>ESTUDIOS SUPERIORES DE SANTA FE</h2>
             <p>TUCUMAN 2731 1½ PISO - Tel : 0342-4558371 / 0342-4525658</p>
@@ -375,7 +389,7 @@ const handlePrint = () => {
             <p>TM: ${currentDetalle.materia} - ${currentDetalle.año} &nbsp;&nbsp;&nbsp; TURNO: ${currentDetalle.turno} &nbsp;&nbsp;&nbsp; DIV: ${currentDetalle.division} &nbsp;&nbsp;&nbsp; TIPO-EXA.: ${currentDetalle.tipo}</p>
           </div>
         </div>
-        
+
         <table>
           <thead>
             <tr>
@@ -397,113 +411,96 @@ const handlePrint = () => {
             ${currentDetalle.alumnos.map((alumno, index) => `
               <tr>
                 <td>${index + 1}</td>
-                <td style="text-align: left">${alumno.apellido} - ${alumno.nombre}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td>${alumno.apellido} - ${alumno.nombre}</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
                 <td>${alumno.dni}</td>
-              </tr>
-            `).join('')}
-            ${Array.from({ length: Math.max(0, 22 - currentDetalle.alumnos.length) }).map((_, index) => `
-              <tr class="empty-row">
-                <td>${currentDetalle.alumnos.length + index + 1}</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
               </tr>
             `).join('')}
           </tbody>
         </table>
-        
-        <div class="footer">
-          <div class="signature-section">
-            <div class="signature-line">FIRMA PRESIDENTE</div>
-            <div>APROBADOS:___________</div>
-            <div>LUGAR : SANTA FE</div>
+
+        <div class="firmas-container">
+          <div class="firma">
+            <div class="firma-linea"></div>
+            <div class="firma-texto">FIRMA PRESIDENTE</div>
           </div>
-          <div class="signature-section">
-            <div class="signature-line">FIRMA VOCAL</div>
-            <div>APLAZADOS:___________</div>
-            <div>FECHA: ${currentDetalle.fecha.split('/').reverse().join('/')}</div>
+          <div class="firma">
+            <div class="firma-linea"></div>
+            <div class="firma-texto">FIRMA VOCAL</div>
           </div>
-          <div class="signature-section">
-            <div class="signature-line">FIRMA VOCAL</div>
-            <div>AUSENTES:___________</div>
+          <div class="firma">
+            <div class="firma-linea"></div>
+            <div class="firma-texto">FIRMA VOCAL</div>
           </div>
         </div>
-        
-        <div class="footer-info">
-          <div class="footer-left">
+
+        <div class="resultados">
+          <div>APROBADOS:___________</div>
+          <div>APLAZADOS:___________</div>
+          <div>AUSENTES:___________</div>
+        </div>
+
+        <div class="ubicacion-fecha">
+          <div>LUGAR : SANTA FE</div>
+          <div>FECHA: ${currentDetalle.fecha.split('/').reverse().join('/')}</div>
+        </div>
+
+        <div class="footer">
+          <div class="contacto">
             <span>ies@iessantafe.edu.ar</span>
             <span>www.iessantafe.edu.ar</span>
           </div>
-          <div class="footer-right">1 of 1</div>
+          <div>1 of 1</div>
         </div>
       </div>
-      
+
       <script>
         window.onload = function() {
-          // Asegurarse de que no hay título
           document.title = '';
-          
-          // Función para detectar cierre de diálogo de impresión
-          function notifyPrintClosed() {
-            window.parent.postMessage('printClosed', '*');
-          }
-          
-          // Registrar eventos para detectar cancelación
-          window.addEventListener('afterprint', notifyPrintClosed);
-          
-          // Dar tiempo para cargar recursos e imprimir
           setTimeout(function() {
             try {
               window.print();
+              setTimeout(function() {
+                window.parent.postMessage('printClosed', '*');
+              }, 1000);
             } catch (e) {
-              // Si falla la impresión, notificar también
-              notifyPrintClosed();
+              window.parent.postMessage('printClosed', '*');
             }
           }, 500);
-          
-          // Timeout de seguridad para reset
-          setTimeout(notifyPrintClosed, 10000);
         };
       </script>
     </body>
     </html>
   `;
-  
-  // Acceder al documento del iframe
+
   const iframeDoc = iframeRef.current.contentDocument || 
                    (iframeRef.current.contentWindow && iframeRef.current.contentWindow.document);
-  
+
   if (iframeDoc) {
-    // Escribir el contenido en el iframe
     iframeDoc.open();
     iframeDoc.write(printContent);
     iframeDoc.close();
-    
-    // Escuchar mensajes del iframe para detectar cuándo termina el proceso
+
     const messageHandler = function(event: MessageEvent) {
       if (event.data === 'printClosed') {
         setIsPrinting(false);
         window.removeEventListener('message', messageHandler);
       }
     };
-    
+
     window.addEventListener('message', messageHandler);
-    
-    // Timeout de seguridad por si no recibimos el mensaje
+
     setTimeout(() => {
       setIsPrinting(false);
-    }, 15000);
+    }, 10000);
   }
 };
+
+
 
   if (!isClient) return null;
 

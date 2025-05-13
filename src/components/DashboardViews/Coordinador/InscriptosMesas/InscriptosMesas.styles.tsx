@@ -238,31 +238,18 @@ export const PrintButton = styled.button`
   font-size: 1rem;
   font-weight: bold;
   color: white;
-  background-color: #2e7d32; // Verde para botón de impresión
+  background-color: #2e7d32;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
   
   &:hover {
     background-color: #1b5e20;
   }
   
-  &:active {
-    transform: translateY(2px);
-  }
-  
   &:disabled {
     background-color: #999;
     cursor: not-allowed;
-    
-    &:hover {
-      background-color: #999;
-    }
-    
-    &:active {
-      transform: none;
-    }
   }
 `;
 
