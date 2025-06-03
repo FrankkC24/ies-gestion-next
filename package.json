@@ -10,11 +10,12 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^4.0.0",
+    "@react-pdf/renderer": "^4.3.0",
     "@styled-system/should-forward-prop": "^5.1.5",
     "@types/styled-components": "^5.1.34",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.0.11",
-    "next": "15.1.6",
+    "next": "15.3.3",
     "react": "^19.0.0",
     "react-datepicker": "^8.0.0",
     "react-dom": "^19.0.0",
@@ -26,8 +27,10 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@types/jspdf": "^2.0.0",
     "@types/node": "^20.17.16",
     "@types/react": "^19",
+    "@types/react-datepicker": "^7.0.0",
     "@types/react-dom": "^19",
     "@types/styled-system__should-forward-prop": "^5.1.4",
     "babel-plugin-styled-components": "^2.1.4",
@@ -39,6 +42,7 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "core-js",
       "sharp"
     ]
   }

@@ -242,6 +242,7 @@ export const PrintButton = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
   
   &:hover {
     background-color: #1b5e20;
@@ -258,12 +259,4 @@ export const ModalActions = styled.div`
   justify-content: flex-end;
   margin: 1rem 0;
   gap: 0.8rem;
-`;
-
-export const HiddenIframe = styled.iframe`
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: 0;
-  visibility: hidden;
 `;

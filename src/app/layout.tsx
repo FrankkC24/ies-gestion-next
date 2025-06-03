@@ -1,10 +1,10 @@
 'use client';
-
 import { ThemeProvider } from 'styled-components';
 import GlobalStyles from '@/styles/GlobalStyles';
 import theme from '@/styles/theme';
 import Header from '@/components/Header/Header';
 import Footer from '@/components/Footer/Footer';
+import { NotificationProvider } from '@/contexts/NotificationContext';
 
 export default function RootLayout({
   children,
@@ -21,9 +21,11 @@ export default function RootLayout({
       <body>
         <ThemeProvider theme={theme}>
           <GlobalStyles />
-          {/* <Header variant="dashboard" /> */}
-          <main>{children}</main>
-          <Footer />
+          <NotificationProvider>
+            {/* <Header variant="dashboard" /> */}
+            <main>{children}</main>
+            <Footer />
+          </NotificationProvider>
         </ThemeProvider>
       </body>
     </html>

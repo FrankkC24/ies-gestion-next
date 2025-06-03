@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
-import { FaEye, FaTimes, FaPrint } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaEye, FaTimes, FaPrint, FaDownload, FaList } from 'react-icons/fa';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import ActaPDF from '@/utils/ActaPDF';
+import ResumenMesasPDF from '@/utils/ResumenMesasPDF';
 import {
   InscriptosMesasContainer,
   FilterContainer,
@@ -18,7 +21,6 @@ import {
   ModalTitle,
   ModalHeader,
   ModalActions,
-  HiddenIframe
 } from './InscriptosMesas.styles';
 
 interface MesaInscriptos {
@@ -51,7 +53,7 @@ const InscriptosMesas: React.FC = () => {
   const [mesas, setMesas] = useState<MesaInscriptos[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showDetalle, setShowDetalle] = useState(false);
-  const [isPrinting, setIsPrinting] = useState(false);
+  const [showPDFPreview, setShowPDFPreview] = useState(false);
   const [currentDetalle, setCurrentDetalle] = useState<{
     asignatura: string;
     fecha: string;
@@ -73,9 +75,6 @@ const InscriptosMesas: React.FC = () => {
     materia: 'TALLER',
     alumnos: []
   });
-  
-  // Referencia al iframe oculto para impresión
-  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Estados para controlar la habilitación en cascada
   const isTurnoEnabled = selectedCarrera !== '';
@@ -222,285 +221,14 @@ const InscriptosMesas: React.FC = () => {
 
   const closeDetalle = () => {
     setShowDetalle(false);
+    setShowPDFPreview(false);
   };
 
-const handlePrint = () => {
-  if (isPrinting || !iframeRef.current) return;
-  setIsPrinting(true);
+  const handleShowPreview = () => {
+    setShowPDFPreview(true);
+  };
 
-  const printContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>Acta Examen</title>
-      <style>
-        @page {
-          size: A4 portrait;
-          margin: 1.5cm;
-        }
-
-        body {
-          font-family: "Times New Roman", Times, serif;
-          font-size: 11pt;
-          margin: 0;
-          padding: 0;
-        }
-
-        .acta-container {
-          width: 100%;
-        }
-
-        .header {
-          display: flex;
-          align-items: center;
-          margin-bottom: 15px;
-        }
-
-        .logo {
-          width: 90px;
-          height: 110px;
-          margin-right: 15px;
-        }
-
-        .header-info h1 {
-          font-size: 14pt;
-          font-weight: bold;
-          margin: 0 0 4px 0;
-        }
-
-        .header-info h2 {
-          font-size: 12pt;
-          font-weight: bold;
-          margin: 0 0 4px 0;
-        }
-
-        .header-info p {
-          font-size: 10pt;
-          margin: 0 0 3px 0;
-        }
-
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          table-layout: fixed;
-          margin-bottom: 30px;
-        }
-
-        thead tr:nth-child(1) th {
-          border-bottom: none;
-        }
-
-        thead tr:nth-child(2) th {
-          border-top: none;
-          padding-top: 6px;
-          padding-bottom: 6px;
-        }
-
-        tr {
-          height: 25px;
-        }
-
-        th, td {
-          border: 1px solid black;
-          padding: 4px 4px;
-          text-align: center;
-          vertical-align: middle;
-          font-size: 10pt;
-          white-space: nowrap;
-          overflow: hidden;
-        }
-
-        th:nth-child(1), td:nth-child(1) { width: 5%; }
-        th:nth-child(2), td:nth-child(2) { width: 30%; text-align: left; padding-left: 5px; }
-        th:nth-child(3), td:nth-child(3),
-        th:nth-child(4), td:nth-child(4),
-        th:nth-child(5), td:nth-child(5),
-        th:nth-child(6), td:nth-child(6),
-        th:nth-child(7), td:nth-child(7) { width: 10%; }
-        th:nth-child(8), td:nth-child(8) { width: 15%; }
-
-        .firmas-container {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 30px;
-        }
-
-        .firma {
-          width: 30%;
-          text-align: center;
-        }
-
-        .firma-linea {
-          width: 100%;
-          border-top: 2px solid black;
-          margin-bottom: 4px;
-        }
-
-        .firma-texto {
-          font-size: 10pt;
-        }
-
-        .resultados {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 10px;
-          font-size: 10pt;
-        }
-
-        .ubicacion-fecha {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 10px;
-          font-size: 10pt;
-        }
-
-        .footer {
-          display: flex;
-          justify-content: space-between;
-          margin-top: 40px;
-          font-size: 9pt;
-        }
-
-        .contacto {
-          display: flex;
-          gap: 15px;
-        }
-
-        @media print {
-          body {
-            -webkit-print-color-adjust: exact;
-          }
-          table {
-            page-break-inside: avoid;
-          }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="acta-container">
-        <div class="header">
-          <img class="logo" src="/assets/escudo.png" alt="Logo" />
-          <div class="header-info">
-            <h1>INSTITUTO SUPERIOR PARTICULAR INCORPORADO Nº 9233</h1>
-            <h2>ESTUDIOS SUPERIORES DE SANTA FE</h2>
-            <p>TUCUMAN 2731 1½ PISO - Tel : 0342-4558371 / 0342-4525658</p>
-            <p>EXAMEN FINAL : ${currentDetalle.asignatura} (${currentDetalle.carrera})</p>
-            <p>TM: ${currentDetalle.materia} - ${currentDetalle.año} &nbsp;&nbsp;&nbsp; TURNO: ${currentDetalle.turno} &nbsp;&nbsp;&nbsp; DIV: ${currentDetalle.division} &nbsp;&nbsp;&nbsp; TIPO-EXA.: ${currentDetalle.tipo}</p>
-          </div>
-        </div>
-
-        <table>
-          <thead>
-            <tr>
-              <th rowspan="2">Nº</th>
-              <th rowspan="2">ALUMNO</th>
-              <th colspan="3">CALIFICACION</th>
-              <th colspan="2">Nº BOL.</th>
-              <th rowspan="2">DNI</th>
-            </tr>
-            <tr>
-              <th>ESC</th>
-              <th>ORAL</th>
-              <th>PROM</th>
-              <th>ESC</th>
-              <th>ORAL</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${currentDetalle.alumnos.map((alumno, index) => `
-              <tr>
-                <td>${index + 1}</td>
-                <td>${alumno.apellido} - ${alumno.nombre}</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>&nbsp;</td>
-                <td>${alumno.dni}</td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-
-        <div class="firmas-container">
-          <div class="firma">
-            <div class="firma-linea"></div>
-            <div class="firma-texto">FIRMA PRESIDENTE</div>
-          </div>
-          <div class="firma">
-            <div class="firma-linea"></div>
-            <div class="firma-texto">FIRMA VOCAL</div>
-          </div>
-          <div class="firma">
-            <div class="firma-linea"></div>
-            <div class="firma-texto">FIRMA VOCAL</div>
-          </div>
-        </div>
-
-        <div class="resultados">
-          <div>APROBADOS:___________</div>
-          <div>APLAZADOS:___________</div>
-          <div>AUSENTES:___________</div>
-        </div>
-
-        <div class="ubicacion-fecha">
-          <div>LUGAR : SANTA FE</div>
-          <div>FECHA: ${currentDetalle.fecha.split('/').reverse().join('/')}</div>
-        </div>
-
-        <div class="footer">
-          <div class="contacto">
-            <span>ies@iessantafe.edu.ar</span>
-            <span>www.iessantafe.edu.ar</span>
-          </div>
-          <div>1 of 1</div>
-        </div>
-      </div>
-
-      <script>
-        window.onload = function() {
-          document.title = '';
-          setTimeout(function() {
-            try {
-              window.print();
-              setTimeout(function() {
-                window.parent.postMessage('printClosed', '*');
-              }, 1000);
-            } catch (e) {
-              window.parent.postMessage('printClosed', '*');
-            }
-          }, 500);
-        };
-      </script>
-    </body>
-    </html>
-  `;
-
-  const iframeDoc = iframeRef.current.contentDocument || 
-                   (iframeRef.current.contentWindow && iframeRef.current.contentWindow.document);
-
-  if (iframeDoc) {
-    iframeDoc.open();
-    iframeDoc.write(printContent);
-    iframeDoc.close();
-
-    const messageHandler = function(event: MessageEvent) {
-      if (event.data === 'printClosed') {
-        setIsPrinting(false);
-        window.removeEventListener('message', messageHandler);
-      }
-    };
-
-    window.addEventListener('message', messageHandler);
-
-    setTimeout(() => {
-      setIsPrinting(false);
-    }, 10000);
-  }
-};
-
-
+  const fileName = `Acta_${currentDetalle.asignatura}_${currentDetalle.fecha.replace(/\//g, '-')}.pdf`;
 
   if (!isClient) return null;
 
@@ -558,7 +286,34 @@ const handlePrint = () => {
       </FilterContainer>
       
       {mesas.length > 0 && (
-        <TableWrapper>
+        <>
+          {/* Botón de resumen - aparece después de cargar los datos */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'flex-end', 
+            marginBottom: '1rem',
+            gap: '0.5rem'
+          }}>
+            <PDFDownloadLink
+              document={
+                <ResumenMesasPDF
+                  mesas={mesas}
+                  carrera={selectedCarrera}
+                  turno={selectedTurno}
+                  llamado={selectedLlamado}
+                  año="2025"
+                />
+              }
+              fileName={`Resumen_Mesas_${selectedTurno}_${selectedLlamado}Llamado.pdf`}
+              style={{ textDecoration: 'none' }}
+            >
+              <PrintButton style={{ backgroundColor: '#ff9800' }}>
+                <FaList /> RESUMEN DE MESAS PDF
+              </PrintButton>
+            </PDFDownloadLink>
+          </div>
+
+          <TableWrapper>
           <Table>
             <thead>
               <tr>
@@ -596,65 +351,149 @@ const handlePrint = () => {
             </tbody>
           </Table>
         </TableWrapper>
+        </>
       )}
       
       {/* Modal para mostrar detalles de inscriptos */}
       {showDetalle && (
         <DetalleModal>
           <DetalleModalContent>
-            <ModalHeader>
-              <ModalTitle>
-                ALUMNOS INSCRIPTOS - {currentDetalle.asignatura}
-              </ModalTitle>
-              <CloseButton onClick={closeDetalle}>
-                <FaTimes />
-              </CloseButton>
-            </ModalHeader>
-            
-            <p>Fecha: {currentDetalle.fecha}</p>
-            <p>Total inscriptos: {currentDetalle.alumnos.length}</p>
-            
-            <ModalActions>
-              <PrintButton
-                onClick={handlePrint}
-                disabled={isPrinting}
-              >
-                <FaPrint /> {isPrinting ? 'PROCESANDO...' : 'IMPRIMIR ACTA'}
-              </PrintButton>
-            </ModalActions>
-            
-            <AlumnosTable>
-              <thead>
-                <tr>
-                  <th>Legajo</th>
-                  <th>Apellido</th>
-                  <th>Nombre</th>
-                  <th>Email</th>
-                  <th>Teléfono</th>
-                  <th>Fecha Inscripción</th>
-                  <th>Condición</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentDetalle.alumnos.map((alumno, index) => (
-                  <tr key={index} className={index % 2 === 1 ? 'row-alternate' : ''}>
-                    <td>{alumno.legajo}</td>
-                    <td>{alumno.apellido}</td>
-                    <td>{alumno.nombre}</td>
-                    <td>{alumno.email}</td>
-                    <td>{alumno.telefono}</td>
-                    <td>{alumno.fechaInscripcion}</td>
-                    <td>{alumno.condicion}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </AlumnosTable>
+            {!showPDFPreview ? (
+              <>
+                <ModalHeader>
+                  <ModalTitle>
+                    ALUMNOS INSCRIPTOS - {currentDetalle.asignatura}
+                  </ModalTitle>
+                  <CloseButton onClick={closeDetalle}>
+                    <FaTimes />
+                  </CloseButton>
+                </ModalHeader>
+                
+                <p>Fecha: {currentDetalle.fecha}</p>
+                <p>Total inscriptos: {currentDetalle.alumnos.length}</p>
+                
+                <ModalActions>
+                  <PrintButton
+                    onClick={handleShowPreview}
+                    style={{ backgroundColor: '#1976d2' }}
+                  >
+                    <FaEye /> VISTA PREVIA PDF
+                  </PrintButton>
+                  
+                  <PDFDownloadLink
+                    document={
+                      <ActaPDF
+                        asignatura={currentDetalle.asignatura}
+                        fecha={currentDetalle.fecha}
+                        turno={currentDetalle.turno}
+                        division={currentDetalle.division}
+                        tipo={currentDetalle.tipo}
+                        carrera={currentDetalle.carrera}
+                        año={currentDetalle.año}
+                        materia={currentDetalle.materia}
+                        alumnos={currentDetalle.alumnos}
+                      />
+                    }
+                    fileName={fileName}
+                    style={{
+                      textDecoration: 'none',
+                    }}
+                  >
+                    <PrintButton>
+                      <FaDownload /> DESCARGAR ACTA PDF
+                    </PrintButton>
+                  </PDFDownloadLink>
+                </ModalActions>
+                
+                <AlumnosTable>
+                  <thead>
+                    <tr>
+                      <th>Legajo</th>
+                      <th>Apellido</th>
+                      <th>Nombre</th>
+                      <th>Email</th>
+                      <th>Teléfono</th>
+                      <th>Fecha Inscripción</th>
+                      <th>Condición</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {currentDetalle.alumnos.map((alumno, index) => (
+                      <tr key={index} className={index % 2 === 1 ? 'row-alternate' : ''}>
+                        <td>{alumno.legajo}</td>
+                        <td>{alumno.apellido}</td>
+                        <td>{alumno.nombre}</td>
+                        <td>{alumno.email}</td>
+                        <td>{alumno.telefono}</td>
+                        <td>{alumno.fechaInscripcion}</td>
+                        <td>{alumno.condicion}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </AlumnosTable>
+              </>
+            ) : (
+              <>
+                <ModalHeader>
+                  <ModalTitle>
+                    VISTA PREVIA - ACTA {currentDetalle.asignatura}
+                  </ModalTitle>
+                  <CloseButton onClick={() => setShowPDFPreview(false)}>
+                    <FaTimes />
+                  </CloseButton>
+                </ModalHeader>
+                
+                <div style={{ height: '70vh', width: '100%' }}>
+                  <PDFViewer style={{ width: '100%', height: '100%' }}>
+                    <ActaPDF
+                      asignatura={currentDetalle.asignatura}
+                      fecha={currentDetalle.fecha}
+                      turno={currentDetalle.turno}
+                      division={currentDetalle.division}
+                      tipo={currentDetalle.tipo}
+                      carrera={currentDetalle.carrera}
+                      año={currentDetalle.año}
+                      materia={currentDetalle.materia}
+                      alumnos={currentDetalle.alumnos}
+                    />
+                  </PDFViewer>
+                </div>
+                
+                <ModalActions style={{ marginTop: '10px' }}>
+                  <PrintButton
+                    onClick={() => setShowPDFPreview(false)}
+                    style={{ backgroundColor: '#757575' }}
+                  >
+                    <FaEye /> VOLVER A LISTA
+                  </PrintButton>
+                  
+                  <PDFDownloadLink
+                    document={
+                      <ActaPDF
+                        asignatura={currentDetalle.asignatura}
+                        fecha={currentDetalle.fecha}
+                        turno={currentDetalle.turno}
+                        division={currentDetalle.division}
+                        tipo={currentDetalle.tipo}
+                        carrera={currentDetalle.carrera}
+                        año={currentDetalle.año}
+                        materia={currentDetalle.materia}
+                        alumnos={currentDetalle.alumnos}
+                      />
+                    }
+                    fileName={fileName}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <PrintButton>
+                      <FaDownload /> DESCARGAR
+                    </PrintButton>
+                  </PDFDownloadLink>
+                </ModalActions>
+              </>
+            )}
           </DetalleModalContent>
         </DetalleModal>
       )}
-      
-      {/* Iframe oculto para impresión */}
-      <HiddenIframe ref={iframeRef} title="Print Frame" />
     </InscriptosMesasContainer>
   );
 };
