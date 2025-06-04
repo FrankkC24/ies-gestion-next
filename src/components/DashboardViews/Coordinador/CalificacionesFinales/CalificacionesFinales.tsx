@@ -41,7 +41,7 @@ interface Alumno {
 }
 
 const CalificacionesFinales: React.FC = () => {
-  const { showNotification, showSuccess, showError, showWarning, isDisabled } = useNotification();
+  const { showNotification, showSuccess, showError, showWarning, replaceNotification, isDisabled } = useNotification();
   const [isClient, setIsClient] = useState(false);
   const [selectedMateria, setSelectedMateria] = useState('');
   const [finales, setFinales] = useState<Final[]>([]);
@@ -49,6 +49,7 @@ const CalificacionesFinales: React.FC = () => {
   const [currentFinal, setCurrentFinal] = useState<Final | null>(null);
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [alumnos, setAlumnos] = useState<Alumno[]>([]);
+  const [alumnosOriginales, setAlumnosOriginales] = useState<Alumno[]>([]); // Para comparar cambios
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -77,7 +78,7 @@ const CalificacionesFinales: React.FC = () => {
     }
 
     setIsLoading(true);
-    showNotification('Buscando finales disponibles...', 'info');
+    showNotification('Buscando finales disponibles...', 'info', 2000);
 
     // Simulamos datos de finales para la materia seleccionada
     setTimeout(() => {
@@ -101,8 +102,13 @@ const CalificacionesFinales: React.FC = () => {
       
       setFinales(finalesMock);
       setIsLoading(false);
-      showSuccess(`Se encontraron ${finalesMock.length} finales para ${getMateriaName(selectedMateria)}`);
-    }, 800);
+      
+      // Reemplazar la notificación anterior con el resultado
+      replaceNotification(
+        `Se encontraron ${finalesMock.length} finales disponibles para ${getMateriaName(selectedMateria)}`, 
+        'success'
+      );
+    }, 1500);
   };
 
   const handleCargarFinal = (final: Final) => {
@@ -144,6 +150,7 @@ const CalificacionesFinales: React.FC = () => {
     ];
     
     setAlumnos(alumnosMock);
+    setAlumnosOriginales(alumnosMock.map(a => ({ ...a }))); // Copia para comparar cambios
     setShowModal(true);
   };
 
@@ -151,14 +158,10 @@ const CalificacionesFinales: React.FC = () => {
     setShowModal(false);
     setCurrentFinal(null);
     setAlumnos([]);
+    setAlumnosOriginales([]);
   };
 
   const handleCalificacionChange = (dni: string, calificacion: string) => {
-    const alumno = alumnos.find(a => a.dni === dni);
-    if (!alumno) return;
-
-    const previousValue = alumno.calificacion;
-    
     setAlumnos(prev => 
       prev.map(alumno => 
         alumno.dni === dni 
@@ -166,24 +169,18 @@ const CalificacionesFinales: React.FC = () => {
           : alumno
       )
     );
-
-    // Mostrar notificación del cambio
-    const nombreCompleto = `${alumno.apellido}, ${alumno.nombre}`;
-    const prevText = previousValue || 'Sin calificación';
-    const newText = calificacion || 'Sin calificación';
-    
-    showNotification(
-      `Calificación de ${nombreCompleto} cambiada de "${prevText}" a "${newText}".`,
-      'info'
-    );
+    // NO mostramos notificación aquí, solo actualizamos el estado
   };
 
   const handleSave = () => {
-    // Validar que haya al menos una calificación
-    const calificacionesIngresadas = alumnos.filter(alumno => alumno.calificacion && alumno.calificacion !== '');
+    // Contar cambios realizados
+    const cambiosRealizados = alumnos.filter((alumno, index) => {
+      const original = alumnosOriginales[index];
+      return original && alumno.calificacion !== original.calificacion;
+    });
     
-    if (calificacionesIngresadas.length === 0) {
-      showWarning('Debe ingresar al menos una calificación antes de guardar.');
+    if (cambiosRealizados.length === 0) {
+      showWarning('No se han realizado cambios en las calificaciones.');
       return;
     }
 
@@ -192,13 +189,18 @@ const CalificacionesFinales: React.FC = () => {
       finalId: currentFinal?.id,
       fecha: selectedDate,
       fechaFormateada: formatDateToDisplay(selectedDate),
-      calificaciones: alumnos
+      cambios: cambiosRealizados
     });
     
-    showSuccess(
-      `Calificaciones guardadas exitosamente para ${calificacionesIngresadas.length} alumno(s).`
-    );
+    // Cerrar modal primero
     handleCloseModal();
+    
+    // Mostrar notificación de éxito después de cerrar
+    setTimeout(() => {
+      showSuccess(
+        `Calificaciones actualizadas exitosamente para ${cambiosRealizados.length} alumno${cambiosRealizados.length > 1 ? 's' : ''}.`
+      );
+    }, 100);
   };
 
   const getMateriaName = (materiaId: string) => {
@@ -225,7 +227,7 @@ const CalificacionesFinales: React.FC = () => {
           onChange={(e) => setSelectedMateria(e.target.value)}
           disabled={isDisabled}
         >
-          <option value="">SELECCIONAR MATERIA</option>
+          <option value="">Seleccionar...</option>
           <option value="1">Programación I</option>
           <option value="2">Base de Datos</option>
           <option value="3">Sistemas Operativos</option>

@@ -17,6 +17,7 @@ interface NotificationContextProps {
   showWarning: (message: string, duration?: number) => void;
   showInfo: (message: string, duration?: number) => void;
   hideNotification: (id: string) => void;
+  replaceNotification: (message: string, type?: 'success' | 'error' | 'warning' | 'info', duration?: number) => void;
   isDisabled: boolean;
 }
 
@@ -49,19 +50,10 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     setNotifications(prev => [...prev, newNotification]);
     setIsDisabled(true);
 
-    // Auto-hide después del duration
+    // Auto-hide después del duration (sin animación doble)
     setTimeout(() => {
-      setNotifications(prev => 
-        prev.map(notif => 
-          notif.id === id ? { ...notif, isFading: true } : notif
-        )
-      );
-      
-      // Remover después de la animación
-      setTimeout(() => {
-        setNotifications(prev => prev.filter(notif => notif.id !== id));
-        setIsDisabled(false);
-      }, 500);
+      setNotifications(prev => prev.filter(notif => notif.id !== id));
+      setIsDisabled(false);
     }, duration);
   };
 
@@ -78,18 +70,25 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
     showNotification(message, 'info', duration);
 
   const hideNotification = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notif => 
-        notif.id === id ? { ...notif, isFading: true } : notif
-      )
-    );
+    setNotifications(prev => prev.filter(notif => notif.id !== id));
+    if (notifications.length <= 1) {
+      setIsDisabled(false);
+    }
+  };
+
+  // Función para reemplazar notificación existente
+  const replaceNotification = (
+    message: string, 
+    type: 'success' | 'error' | 'warning' | 'info' = 'info', 
+    duration: number = 5000
+  ) => {
+    // Limpiar notificaciones existentes
+    setNotifications([]);
     
+    // Crear nueva notificación
     setTimeout(() => {
-      setNotifications(prev => prev.filter(notif => notif.id !== id));
-      if (notifications.length <= 1) {
-        setIsDisabled(false);
-      }
-    }, 500);
+      showNotification(message, type, duration);
+    }, 100);
   };
 
   return (
@@ -100,6 +99,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({ chil
       showWarning,
       showInfo,
       hideNotification,
+      replaceNotification,
       isDisabled
     }}>
       {children}
@@ -185,7 +185,7 @@ const NotificationItem = styled.div<{
 const ProgressBar = styled.div<{ $duration: number }>`
   width: 100%;
   height: 5px;
-  background-color: #fff;
+  background-color: #e0e0e0;
   border-radius: 2px;
   overflow: hidden;
   position: relative;
@@ -197,12 +197,15 @@ const ProgressBar = styled.div<{ $duration: number }>`
     top: 0;
     left: 0;
     height: 100%;
-    width: 100%;
-    background-color: currentColor;
-    animation: progressBar ${({ $duration }) => $duration}ms linear;
+    width: 0%;
+    background-color: ${({ theme }) => {
+      // Usar el color del borde de la notificación
+      return 'currentColor';
+    }};
+    animation: progressBarShrink ${({ $duration }) => $duration}ms linear forwards;
   }
 
-  @keyframes progressBar {
+  @keyframes progressBarShrink {
     0% {
       width: 100%;
     }

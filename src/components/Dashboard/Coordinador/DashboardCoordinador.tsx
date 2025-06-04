@@ -10,6 +10,7 @@ import {
   FaBook,
   FaBug,
   FaBell,
+  FaGraduationCap,
 } from 'react-icons/fa';
 import {
   DashboardContainer,
@@ -26,6 +27,7 @@ import BuscarDocentes from '@/components/DashboardViews/Coordinador/BuscarDocent
 import NotificarDocentes from '@/components/DashboardViews/Coordinador/NotificarDocentes/NotificarDocentes';
 import BuscarAlumnos from '@/components/DashboardViews/Coordinador/BuscarAlumnos/BuscarAlumnos';
 import NotificarAlumnos from '@/components/DashboardViews/Coordinador/NotificarAlumnos/NotificarAlumnos';
+import CalificacionesAlumno from '@/components/DashboardViews/Coordinador/CalificacionesAlumno/CalificacionesAlumno';
 import BuscarMaterias from '@/components/DashboardViews/Coordinador/BuscarMaterias/BuscarMaterias';
 import EditarHorarios from '@/components/DashboardViews/Coordinador/EditarHorarios/EditarHorarios';
 import NuevoHorario from '@/components/DashboardViews/Coordinador/NuevoHorario/NuevoHorario';
@@ -33,7 +35,6 @@ import EditarMesas from '@/components/DashboardViews/Coordinador/EditarMesas/Edi
 import ImprimirMesas from '@/components/DashboardViews/Coordinador/ImprimirMesas/ImprimirMesas';
 import InscriptosMesas from '@/components/DashboardViews/Coordinador/InscriptosMesas/InscriptosMesas';
 import CalificacionesFinales from '@/components/DashboardViews/Coordinador/CalificacionesFinales/CalificacionesFinales';
-
 
 const DashboardCoordinador: React.FC = () => {
   const [visibleMenus, setVisibleMenus] = useState<string[]>([]);
@@ -66,6 +67,8 @@ const DashboardCoordinador: React.FC = () => {
         return <BuscarAlumnos />;
       case 'NotificarAlumnos':
         return <NotificarAlumnos />;
+      case 'CalificacionesAlumno':
+        return <CalificacionesAlumno />;
       case 'BuscarMaterias':
         return <BuscarMaterias />;
       case 'EditarHorarios':
@@ -134,6 +137,10 @@ const DashboardCoordinador: React.FC = () => {
               <li onClick={() => handleSubMenuClick('NotificarAlumnos')}>
                 <FaBell style={{ marginRight: '0.5rem' }} />
                 NOTIFICAR
+              </li>
+              <li onClick={() => handleSubMenuClick('CalificacionesAlumno')}>
+                <FaGraduationCap style={{ marginRight: '0.5rem' }} />
+                CALIFICACIONES
               </li>
             </SubMenu>
           </MenuItem>
