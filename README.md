@@ -57,35 +57,6 @@ src/
 └── utils/               
 ```
 
-
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v18 or higher)
-- pnpm (recommended)
-
-### Installation
-
-1. Clone the repository:
-```bash
-git clone https://github.com/your-username/ies-gestion-next.git
-cd ies-gestion-next
-```
-
-2. Install dependencies:
-```bash
-pnpm install
-```
-
-3. Run the development server:
-```bash
-pnpm dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) to view the application.
-
 ## 🎯 User Roles & Features
 
 ### 👨‍🎓 Students (Alumno)
@@ -106,23 +77,6 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 - Generate academic reports
 - Send notifications
 
-## 📦 Available Scripts
-
-```bash
-pnpm dev          # Start development server with Turbopack
-pnpm build        # Build for production
-pnpm start        # Start production server
-pnpm lint         # Run ESLint
-```
-
-## 🏗️ Architecture
-
-- **Frontend-only**: Currently no backend integration
-- **Component-based**: Modular React components with TypeScript
-- **Styled Components**: CSS-in-JS with Tailwind utility classes
-- **Form Handling**: React Hook Form with Zod validation
-- **State Management**: React Context for notifications
-
 ## 🔧 Development Notes
 
 - Built with Next.js 15 App Router
@@ -134,13 +88,5 @@ pnpm lint         # Run ESLint
 ## 📄 License
 
 This project is licensed under the MIT License.
-
-## 👨‍💻 Author
-
-**[Your Name]**
-- GitHub: [@your-username](https://github.com/your-username)
-- LinkedIn: [Your Profile](https://linkedin.com/in/your-profile)
-
----
 
 ⭐ If you found this project helpful, please give it a star!
