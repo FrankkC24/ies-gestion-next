@@ -35,10 +35,6 @@ A comprehensive management system for higher education institutions built with N
 ### Coordinator Dashboard
 ![Coordinator Dashboard](./screenshots/coordinator.png)
 
-### Reports
-![Reports](./screenshots/reports.png)
-
-
 ## 📁 Project Structure
 
 ```
