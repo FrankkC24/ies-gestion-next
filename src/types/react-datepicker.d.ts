@@ -14,22 +14,12 @@ declare module 'react-datepicker' {
     timeFormat?: string;
     timeIntervals?: number;
     locale?: string;
-    renderCustomHeader?: (params: {
-      date: Date;
-      decreaseMonth: () => void;
-      increaseMonth: () => void;
-      prevMonthButtonDisabled?: boolean;
-      nextMonthButtonDisabled?: boolean;
-    }) => React.ReactNode;
-    formatWeekDay?: (nameOfDay: string) => string;
-    popperPlacement?: string;
-    popperModifiers?: any[];
     [key: string]: any;
   }
   
   const DatePicker: React.FC<ReactDatePickerProps>;
   export default DatePicker;
   
-  // Agregar la función registerLocale
+  // Función registerLocale
   export function registerLocale(localeName: string, localeData: any): void;
 }

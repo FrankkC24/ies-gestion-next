@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { es } from 'date-fns/locale'; // Importar locale español
+import { FaSave } from 'react-icons/fa'; // Importar icono de guardar
 import {
   CalificacionesAlumnoContainer,
   FormContainer,
@@ -23,91 +25,8 @@ import {
 } from '@/components/DashboardViews/Coordinador/CalificacionesAlumno/CalificacionesAlumno.styles';
 import { useNotification } from '@/contexts/NotificationContext';
 
-// Componente personalizado para DatePicker en español
-const DatePickerEspanol: React.FC<{
-  selected: Date | null;
-  onChange: (date: Date | null) => void;
-  placeholderText: string;
-}> = ({ selected, onChange, placeholderText }) => {
-  const mesesEspanol = [
-    'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-    'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
-  ];
-
-  const diasEspanol = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-
-  return (
-    <DatePicker
-      selected={selected}
-      onChange={onChange}
-      placeholderText={placeholderText}
-      dateFormat="dd/MM/yyyy"
-      renderCustomHeader={({ 
-        date, 
-        decreaseMonth, 
-        increaseMonth 
-      }: {
-        date: Date;
-        decreaseMonth: () => void;
-        increaseMonth: () => void;
-      }) => (
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          padding: '0.5rem',
-          backgroundColor: '#860000',
-          color: 'white'
-        }}>
-          <button 
-            onClick={decreaseMonth}
-            type="button"
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              color: 'white', 
-              fontSize: '1.2rem',
-              cursor: 'pointer'
-            }}
-          >
-            ‹
-          </button>
-          <div style={{ fontWeight: 'bold' }}>
-            {mesesEspanol[date.getMonth()]} {date.getFullYear()}
-          </div>
-          <button 
-            onClick={increaseMonth}
-            type="button"
-            style={{ 
-              background: 'none', 
-              border: 'none', 
-              color: 'white', 
-              fontSize: '1.2rem',
-              cursor: 'pointer'
-            }}
-          >
-            ›
-          </button>
-        </div>
-      )}
-      formatWeekDay={(nameOfDay: string) => {
-        const dayIndex = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(nameOfDay);
-        return diasEspanol[dayIndex] || nameOfDay;
-      }}
-      popperPlacement="bottom-start"
-      popperModifiers={[
-        {
-          name: 'preventOverflow',
-          options: {
-            rootBoundary: 'viewport',
-            tether: false,
-            altAxis: true,
-          },
-        },
-      ]}
-    />
-  );
-};
+// Registrar locale español
+registerLocale('es', es);
 
 interface Alumno {
   id: string;
@@ -192,12 +111,26 @@ const CalificacionesAlumno: React.FC = () => {
     ],
   };
 
+  // Limpiar estado cuando el componente se desmonta o cambia de vista
+  useEffect(() => {
+    // Cleanup function que se ejecuta cuando el componente se desmonta
+    return () => {
+      setHayChangiosPendientes(false);
+      setMostrarMaterias(false);
+      setAlumnoSeleccionado('');
+      setDniAlumno('');
+      setNotasMaterias([]);
+      setNotasOriginales([]);
+    };
+  }, []);
+
   // Actualizar lista de alumnos cuando cambia el año
   useEffect(() => {
     setAlumnos(alumnosMock[añoSeleccionado] || []);
     setAlumnoSeleccionado('');
     setDniAlumno('');
     setMostrarMaterias(false);
+    setHayChangiosPendientes(false);
   }, [añoSeleccionado]);
 
   // Actualizar DNI cuando se selecciona un alumno
@@ -209,6 +142,7 @@ const CalificacionesAlumno: React.FC = () => {
       setDniAlumno('');
     }
     setMostrarMaterias(false);
+    setHayChangiosPendientes(false);
   }, [alumnoSeleccionado, alumnos]);
 
   // Función para crear nota vacía
@@ -310,10 +244,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.tp1.fecha}
                 onChange={(date) => actualizarNota(materia.id, 'tp1', 'fecha', date)}
                 placeholderText="Fecha"
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
             
@@ -328,10 +266,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.tp1.fechaRecuperatorio}
                 onChange={(date) => actualizarNota(materia.id, 'tp1', 'fechaRecuperatorio', date)}
                 placeholderText="Fecha Rec."
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
           </NotaRow>
@@ -349,10 +291,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.tp2.fecha}
                 onChange={(date) => actualizarNota(materia.id, 'tp2', 'fecha', date)}
                 placeholderText="Fecha"
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
             
@@ -367,10 +313,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.tp2.fechaRecuperatorio}
                 onChange={(date) => actualizarNota(materia.id, 'tp2', 'fechaRecuperatorio', date)}
                 placeholderText="Fecha Rec."
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
           </NotaRow>
@@ -388,10 +338,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.parcial1.fecha}
                 onChange={(date) => actualizarNota(materia.id, 'parcial1', 'fecha', date)}
                 placeholderText="Fecha"
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
             
@@ -406,10 +360,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.parcial1.fechaRecuperatorio}
                 onChange={(date) => actualizarNota(materia.id, 'parcial1', 'fechaRecuperatorio', date)}
                 placeholderText="Fecha Rec."
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
           </NotaRow>
@@ -427,10 +385,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.parcial2.fecha}
                 onChange={(date) => actualizarNota(materia.id, 'parcial2', 'fecha', date)}
                 placeholderText="Fecha"
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
             
@@ -445,10 +407,14 @@ const CalificacionesAlumno: React.FC = () => {
               ))}
             </Select>
             <DatePickerWrapper>
-              <DatePickerEspanol
+              <DatePicker
                 selected={notasMateria.parcial2.fechaRecuperatorio}
                 onChange={(date) => actualizarNota(materia.id, 'parcial2', 'fechaRecuperatorio', date)}
                 placeholderText="Fecha Rec."
+                dateFormat="dd/MM/yyyy"
+                locale="es"
+                popperClassName="datepicker-popper"
+                popperPlacement="bottom-start"
               />
             </DatePickerWrapper>
           </NotaRow>
@@ -537,7 +503,8 @@ const CalificacionesAlumno: React.FC = () => {
       {/* Botón flotante para guardar cambios */}
       {haycambiosPendientes && (
         <FloatingButton onClick={guardarCambios}>
-          💾 Guardar Cambios
+          <FaSave style={{ marginRight: '0.5rem' }} />
+          Guardar Cambios
         </FloatingButton>
       )}
     </CalificacionesAlumnoContainer>

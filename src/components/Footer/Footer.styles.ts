@@ -11,6 +11,7 @@ export const FooterContainer = styled.footer`
   align-items: center;
   padding: 1rem 2rem;
   box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10001 !important;
 `;
 
 export const ContactInfo = styled.div`

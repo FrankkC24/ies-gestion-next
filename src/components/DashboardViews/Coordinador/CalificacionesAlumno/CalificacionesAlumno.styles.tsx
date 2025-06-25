@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 export const CalificacionesAlumnoContainer = styled.div`
-  padding: 1rem 1.5rem 3rem 1.5rem; /* Agregado padding bottom para el botón */
+  padding: 1rem 1.5rem 3rem 1.5rem;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
   height: 100%;
-  position: relative; /* Para posicionar el botón relativo a este contenedor */
+  position: relative;
 
   h2 {
     font-size: 2rem;
@@ -138,11 +138,11 @@ export const MateriasContainer = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
   gap: 1.2rem;
   margin-top: 1.5rem;
-  padding-bottom: 2rem; /* Espacio para que no se tapen con el botón */
+  padding-bottom: 2rem;
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
-    padding-bottom: 3rem; /* Más espacio en móviles */
+    padding-bottom: 3rem;
   }
 `;
 
@@ -242,8 +242,14 @@ export const DatePickerWrapper = styled.div`
     }
   }
 
+  .datepicker-popper {
+    z-index: 15 !important;
+    position: fixed !important;
+  }
+
   .react-datepicker-popper {
-    z-index: 1000 !important;
+    z-index: 15 !important;
+    position: fixed !important;
   }
 
   .react-datepicker {
@@ -251,7 +257,8 @@ export const DatePickerWrapper = styled.div`
     border-radius: 6px;
     font-family: inherit;
     font-size: 0.9rem;
-    z-index: 1000;
+    z-index: 15 !important;
+    position: relative;
   }
 
   .react-datepicker__header {
@@ -308,46 +315,32 @@ export const DatePickerWrapper = styled.div`
   .react-datepicker__month-container {
     font-size: 0.85rem;
   }
-
-  /* Nombres de meses en español */
-  .react-datepicker__month-select option[value="0"]::after { content: "Enero"; }
-  .react-datepicker__month-select option[value="1"]::after { content: "Febrero"; }
-  .react-datepicker__month-select option[value="2"]::after { content: "Marzo"; }
-  .react-datepicker__month-select option[value="3"]::after { content: "Abril"; }
-  .react-datepicker__month-select option[value="4"]::after { content: "Mayo"; }
-  .react-datepicker__month-select option[value="5"]::after { content: "Junio"; }
-  .react-datepicker__month-select option[value="6"]::after { content: "Julio"; }
-  .react-datepicker__month-select option[value="7"]::after { content: "Agosto"; }
-  .react-datepicker__month-select option[value="8"]::after { content: "Septiembre"; }
-  .react-datepicker__month-select option[value="9"]::after { content: "Octubre"; }
-  .react-datepicker__month-select option[value="10"]::after { content: "Noviembre"; }
-  .react-datepicker__month-select option[value="11"]::after { content: "Diciembre"; }
 `;
 
 export const FloatingButton = styled.button`
-  position: absolute; /* Cambiado de fixed a absolute */
-  bottom: 1rem; /* Posicionado relativo al contenedor */
-  right: 1.5rem;
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
+  position: fixed;
+  bottom: 6rem; /* Cambiado de 2rem a 6rem para que esté más arriba */
+  right: 2rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 0.9rem;
   font-weight: bold;
   color: white;
-  background-color: #2e7d32;
-  border: none;
-  border-radius: 50px;
+  background-color: #d32f2f;
+  border: 2px solid white;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
-  z-index: 100; /* Reducido para que no interfiera */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   animation: slideInUp 0.5s ease;
 
   &:hover {
-    background-color: #1b5e20;
+    background-color: #b71c1c;
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(46, 125, 50, 0.6);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   }
 
   &:active {
@@ -366,9 +359,9 @@ export const FloatingButton = styled.button`
   }
 
   @media (max-width: 768px) {
-    bottom: 1rem;
-    right: 1rem;
-    padding: 0.8rem 1.2rem;
-    font-size: 0.9rem;
+    bottom: 3rem; /* También más arriba en móviles */
+    right: 1.5rem;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.85rem;
   }
 `;
